@@ -1,2 +1,3 @@
 # KNX-Communication-Analyser
-BTS SNIR 
+Wiresark-like KNX network frame analyser.
+
