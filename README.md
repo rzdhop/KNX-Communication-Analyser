@@ -1,4 +1,11 @@
+<img src="assets/knxworkers-logo.png" width="300">
+
 # KNX-Communication-Analyser
+> *By KNXWorkers Inc.*
+
+[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)
+[![Standard](https://img.shields.io/badge/C%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+![APM](https://img.shields.io/apm/l/vim-mode)
 
 ## About
 
@@ -6,7 +13,7 @@
 
 ## Features
 
-* See in real-time brut KNX frames transitioning in the network.
+* See in real-time raw KNX frames transitioning in the network.
 * See the translation of the action. For example "Box n°1 transmits the order to turn on the light n°04"
 * Log mode: export in one .md or .txt file the frames and their translation transmitted during the execution of the program.
 * Minimized logs mode: the program runs in the background and writes on a file the frames transmitted during the execution of the program.
@@ -26,11 +33,11 @@ This program was designed to be used in Windows.
 
 ## Feedbacks
 
-If you find any bug, do not hesitate to file an issue. Thanks!
+If you find any bug, do not hesitate to create an new [issue](https://github.com/rzdhop/KNX-Communication-Analyser/issues "issue's section"). Thanks!
 
 ## Contributors
 
-This awesome program is created by [IchInose_0x3b](https://github.com/rzdhop "IchInose_0x3b GitHub profile"), [VictorFS78](https://github.com/VictorFS78 "IchInose_0x3b GitHub profile") and Johanne.
+This awesome program is written by [IchInose_0x3b](https://github.com/rzdhop "IchInose_0x3b GitHub profile"), [VictorFS78](https://github.com/VictorFS78 "VictorFS78 GitHub profile") and [Soajoh](https://github.com/Soajoh "Soajoh GitHub profile").
 
 ## Licence
 
@@ -40,6 +47,4 @@ This program is under the MIT license.
 
 [We used this PCB plate](https://github.com/ "no link")
 
-[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)
-[![Standard](https://img.shields.io/badge/C%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
-![APM](https://img.shields.io/apm/l/vim-mode)
+
