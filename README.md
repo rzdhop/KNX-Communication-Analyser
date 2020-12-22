@@ -55,8 +55,4 @@ This awesome program is written by [IchInose_0x3b](https://github.com/rzdhop "Ic
 
 ## License
 
-This program is under the MIT license.
-
-### PCB Plate
-
-[We used this PCB plate](https://github.com/ "no link")
+MIT license.
