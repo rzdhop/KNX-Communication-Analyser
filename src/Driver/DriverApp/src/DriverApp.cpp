@@ -1,11 +1,11 @@
 #include <Windows.h>
 #include <iostream>
-#include "DriverCore.h"
+#include "../../DriverCore/DriverCore/DriverCore.h"
 
 int main()
 {
 	const unsigned int buffer_size(10);
-	DWORD Buffer[buffer_size] = { 0 };
+	const char* Buffer[buffer_size] = { 0 };
 
 	//load dllinto addr space of client proc
 	HMODULE hDLL = LoadLibraryExW(L"DriverCore.dll", nullptr, 0);
@@ -26,7 +26,7 @@ int main()
 	CSerialPort->HelloWorld();
 	std::cout << "\n\n";
 	
-	CSerialPort->readSerialPort(&Buffer, &buffer_size);
+	CSerialPort->_SerialList();
 
 	return 0;
 }
