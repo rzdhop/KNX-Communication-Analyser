@@ -3,7 +3,6 @@
 #define MAX_KEY_LENGTH 255
 #define MAX_VALUE_NAME 16383
 
-#include "pch.h"
 #include "DriverCore.h"
 #include <iostream>
 #include <windows.h>
@@ -102,23 +101,6 @@ bool SerialPort::isConnected()
 {
 	return this->_connState;
 }
-std::string SerialPort::_w_to_s(std::wstring WSTRING)
-{
-	std::setlocale(LC_ALL, "");
-	const std::locale locale("");
-	typedef std::codecvt<wchar_t, char, std::mbstate_t> converter_type;
-	const converter_type& converter = std::use_facet<converter_type>(locale);
-	std::vector<char> to(WSTRING.length() * converter.max_length());
-	std::mbstate_t state;
-	const wchar_t* from_next;
-	char* to_next;
-	const converter_type::result result = converter.out(state, WSTRING.data(), WSTRING.data() + WSTRING.length(), from_next, &to[0], (&to[0] + to.size()), to_next);
-	if (result == converter_type::ok or result == converter_type::noconv) {
-		const std::string s(&to[0], to_next);
-		return s;
-	}
-	return "Error";
-}
 std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 {
 
@@ -146,6 +128,24 @@ std::vector<std::string> SerialPort::_SerialList()
 		}
 	}
 	return serialList;
+}
+//make a tamplate
+std::string SerialPort::_w_to_s(std::wstring WSTRING)
+{
+	std::setlocale(LC_ALL, "");
+	const std::locale locale("");
+	typedef std::codecvt<wchar_t, char, std::mbstate_t> converter_type;
+	const converter_type& converter = std::use_facet<converter_type>(locale);
+	std::vector<char> to(WSTRING.length() * converter.max_length());
+	std::mbstate_t state;
+	const wchar_t* from_next;
+	char* to_next;
+	const converter_type::result result = converter.out(state, WSTRING.data(), WSTRING.data() + WSTRING.length(), from_next, &to[0], (&to[0] + to.size()), to_next);
+	if (result == converter_type::ok or result == converter_type::noconv) {
+		const std::string s(&to[0], to_next);
+		return s;
+	}
+	return "Error";
 }
 void SerialPort::HelloWorld()
 {
