@@ -1,4 +1,8 @@
-// DriverCore.cpp : Defines the entry point for the DLL application.
+#define WIN32_LEAN_AND_MEAN
+#define BAUDRATE 9600
+#define MAX_KEY_LENGTH 255
+#define MAX_VALUE_NAME 16383
+
 #include "pch.h"
 #include "DriverCore.h"
 #include <iostream>
@@ -7,34 +11,30 @@
 #include <clocale>
 #include <locale>
 
-#define BAUDRATE 9600
-#define MAX_KEY_LENGTH 255
-#define MAX_VALUE_NAME 16383
-
-extern "C" __declspec(dllexport) SerialPort * __cdecl CreateSerialPort(const char* portName)
+extern "C" __declspec(dllexport) SerialPort * __cdecl CreateSerialPort()
 {
-	return new SerialPort(portName);
+	return new SerialPort();
 }
 
-
-SerialPort::SerialPort(const char* portName = "NOCOM") 
+SerialPort::SerialPort()
 {
 	this->_errors = 0;
 	this->_status = { 0 };
 	this->_connState = FALSE;
 
 	//debug cond
-	if (std::strcmp(portName, "NOCOM")) this->_portName = (LPCSTR)this->_autoSelectPort(this->_SerialList()).c_str();
-	else this->_portName = (LPCSTR)portName;
+	auto tmp = this->_autoSelectPort(this->_SerialList());
+	this->_portName = tmp.c_str();
 
+	std::cout << "Port name: " << this->_portName << std::endl;
 	//Init I/O stream windows handler
-	this->_streamHandle = CreateFileA(this->_portName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (this->_streamHandle == INVALID_HANDLE_VALUE) {
-        if (GetLastError() == ERROR_FILE_NOT_FOUND) {
-            std::cout << "ERROR: Handle was not attached. Reason: " << portName << " not available\n";
-        }
+	this->_streamHandle = CreateFileA((LPCSTR)this->_portName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (this->_streamHandle == INVALID_HANDLE_VALUE) {
+		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+			std::cout << "ERROR: Handle was not attached. Reason: " << this->_portName << " not available\n";
+		}
 		else { printf("Undefined Error ! %d \n", GetLastError()); return; }
-	} 
+	}
 
 	//Declare pointer to LPDCB struct (serialCOM parameters)
 	DCB dcbSerialParameters = { 0 };
@@ -52,7 +52,7 @@ SerialPort::SerialPort(const char* portName = "NOCOM")
 		dcbSerialParameters.fDtrControl = DTR_CONTROL_ENABLE;
 
 		if (!SetCommState(this->_streamHandle, &dcbSerialParameters)) {
-			std::cout << "ALERT: could not set Serial port parameters\n" ;
+			std::cout << "ALERT: could not set Serial port parameters\n";
 			return;
 		}
 		else {
@@ -78,7 +78,7 @@ void SerialPort::_CloseConn()
 	else std::cout << "There is no connection to Terminate \n";
 	return;
 }
-int SerialPort::readSerialPort(char* buffer, unsigned int buf_size) 
+int SerialPort::readSerialPort(char* buffer, unsigned int buf_size)
 {
 	DWORD bytesRead;
 	DWORD toRead = 0;
@@ -98,8 +98,8 @@ int SerialPort::readSerialPort(char* buffer, unsigned int buf_size)
 
 	return 0;
 }
-bool SerialPort::isConnected() 
-{ 
+bool SerialPort::isConnected()
+{
 	return this->_connState;
 }
 std::string SerialPort::_w_to_s(std::wstring WSTRING)
@@ -119,84 +119,35 @@ std::string SerialPort::_w_to_s(std::wstring WSTRING)
 	}
 	return "Error";
 }
-
 std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 {
 
-	return "COM6";
+	return "";
 }
 std::vector<std::string> SerialPort::_SerialList()
 {
-	std::vector<std::wstring> serialList;
-	std::vector<std::string> strSerialList;
-	std::string COMName("COM"), queryName(COMName);
-	TCHAR bufferTragetPath[512];
+	std::vector<std::string> serialList;
+	std::string COMName("COM"), queryName("");
+	char bufferTragetPath[5000];
 	std::string tmp;
-	int path_size(0);
+	DWORD path_size(0);
 
-	//teste each COM name to get the one used by the system
+	//test each COM name to get the one used by the system and get his description name
 	for (int i(0); i < 255; i++)
 	{
 		queryName = COMName + std::to_string(i);
-		std::cout << "testing  " << queryName << std::endl;
-		path_size = QueryDosDeviceW((WCHAR*)&queryName, (LPWSTR)bufferTragetPath, 512);//Query the path of the COMName
+
+		//Query the path of the COMName
+		path_size = QueryDosDeviceA(queryName.c_str(), bufferTragetPath, 5000);
+		std::cout << std::endl << "Path for " << queryName << ":" << path_size << "   " << queryName;
 		if (path_size != 0) {
-			std::cout << "pushing..." << std::endl;
-			serialList.push_back(bufferTragetPath);
-		}		
+			std::cout << "pushing..." << queryName << " on " << bufferTragetPath << std::endl;
+			serialList.push_back(tmp);
+		}
 	}
-	//converting path to str and return std::vector<std::string>
-	for (unsigned int i(0); i < serialList.size(); i++) {
-		tmp = this->_w_to_s(serialList.back());
-		serialList.pop_back();
-		strSerialList.push_back(tmp);
-	}
-	return strSerialList;
-
-	/*
-	HKEY regValue;
-
-	//opening a Key module
-	LSTATUS HKEYStream = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SYSTEM\\CurrentControlSet\\Enum\\USB\\VID_067B&PID_2303", 0, KEY_ENUMERATE_SUB_KEYS, &regValue);
-	
-	//----------------Listing subRegistery------------------
-	DWORD i, retCode;
-	TCHAR achValue[MAX_VALUE_NAME];
-	DWORD cchValue = MAX_VALUE_NAME;
-
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, NULL, 0, KEY_READ, &regValue) == ERROR_SUCCESS)
-	{
-		//QueryKey(hTestKey);
-		TCHAR    achKey[MAX_KEY_LENGTH];   // buffer for subkey name
-		DWORD    cbName;                   // size of name string 
-		TCHAR    achClass[MAX_PATH] = TEXT("");  // buffer for class name 
-		DWORD    cchClassName = MAX_PATH;  // size of class string 
-		DWORD    cSubKeys = 0;               // number of subkeys 
-		DWORD    cbMaxSubKey;              // longest subkey size 
-		DWORD    cchMaxClass;              // longest class string 
-		DWORD    cValues;              // number of values for key 
-		DWORD    cchMaxValue;          // longest value name 
-		DWORD    cbMaxValueData;       // longest value data 
-		DWORD    cbSecurityDescriptor; // size of security descriptor 
-		FILETIME ftLastWriteTime;      // last write time 
-
-		retCode = RegQueryInfoKey(hTestKey, 
-								achClass, 
-								&cchClassName,
-								NULL, 
-								&cSubKeys, 
-								&cbMaxSubKey,
-								&cchMaxClass,
-								&cValues,
-								&cchMaxValue,
-								&cbMaxValueData,
-								&cbSecurityDescriptor,
-								&ftLastWriteTime);
-	*/
+	return serialList;
 }
-
-
 void SerialPort::HelloWorld()
 {
-    std::cout << "Hello World !\n";
+	std::cout << "Hello World !\n";
 }
