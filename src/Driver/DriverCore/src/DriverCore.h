@@ -22,7 +22,7 @@ public:
 	virtual void HelloWorld();
 	virtual bool isConnected();
 	virtual std::vector<std::string> _SerialList();
-	virtual std::string _w_to_s(std::wstring WSTRING);
+	//virtual std::string _w_to_s(std::wstring WSTRING);
 	virtual std::string _autoSelectPort(std::vector<std::string> serialList);
 	virtual int readSerialPort(char* buffer, unsigned int buf_size);
 };

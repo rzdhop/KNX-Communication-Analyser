@@ -3,7 +3,6 @@
 #define MAX_KEY_LENGTH 255
 #define MAX_VALUE_NAME 16383
 
-#include "pch.h"
 #include "DriverCore.h"
 #include <iostream>
 #include <windows.h>
@@ -102,6 +101,7 @@ bool SerialPort::isConnected()
 {
 	return this->_connState;
 }
+/*
 std::string SerialPort::_w_to_s(std::wstring WSTRING)
 {
 	std::setlocale(LC_ALL, "");
@@ -119,7 +119,7 @@ std::string SerialPort::_w_to_s(std::wstring WSTRING)
 	}
 	return "Error";
 }
-
+*/
 std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 {
 	auto numberOfSerial = serialList.size();
