@@ -1,0 +1,8 @@
+#Build DLL in DriverApp/bin/$(IntDir)
+SRC = src/DriverCore.cpp
+OUT = ../DriverApp/bin/DriverCore.dll
+
+all: $(SRC)
+
+DLL: $(SRC)
+	cl.exe /D_WINDLL /D_AFXDLL /D_AFEXT $(SRC) /MD /link /DLL /OUT:$(OUT)
