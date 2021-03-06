@@ -3,6 +3,7 @@
 #define MAX_KEY_LENGTH 255
 #define MAX_VALUE_NAME 16383
 
+#include "pch.h"
 #include "DriverCore.h"
 #include <iostream>
 #include <windows.h>
@@ -101,35 +102,6 @@ bool SerialPort::isConnected()
 {
 	return this->_connState;
 }
-std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
-{
-
-	return "";
-}
-std::vector<std::string> SerialPort::_SerialList()
-{
-	std::vector<std::string> serialList;
-	std::string COMName("COM"), queryName("");
-	char bufferTragetPath[5000];
-	std::string tmp;
-	DWORD path_size(0);
-
-	//test each COM name to get the one used by the system and get his description name
-	for (int i(0); i < 255; i++)
-	{
-		queryName = COMName + std::to_string(i);
-
-		//Query the path of the COMName
-		path_size = QueryDosDeviceA(queryName.c_str(), bufferTragetPath, 5000);
-		std::cout << std::endl << "Path for " << queryName << ":" << path_size << "   " << queryName;
-		if (path_size != 0) {
-			std::cout << "pushing..." << queryName << " on " << bufferTragetPath << std::endl;
-			serialList.push_back(tmp);
-		}
-	}
-	return serialList;
-}
-//make a tamplate
 std::string SerialPort::_w_to_s(std::wstring WSTRING)
 {
 	std::setlocale(LC_ALL, "");
@@ -146,6 +118,53 @@ std::string SerialPort::_w_to_s(std::wstring WSTRING)
 		return s;
 	}
 	return "Error";
+}
+
+std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
+{
+	auto numberOfSerial = serialList.size();
+	char bufferPathFriendlyName[5000]; 
+	std::string physicalDeviceObjectName;
+	std::size_t lastPos;
+
+	for (size_t i(0); i < numberOfSerial; i++)
+	{
+		std::cout << "seriallist testing Name : " <<serialList.back() << std::endl;
+		QueryDosDeviceA(serialList.back().c_str(), bufferPathFriendlyName, 5000);
+
+		physicalDeviceObjectName = bufferPathFriendlyName;
+		lastPos = physicalDeviceObjectName.find_last_of("\\");
+
+		std::cout <<"Friendly Name : "  << physicalDeviceObjectName.substr(lastPos+1) << " --- Full Path : " << bufferPathFriendlyName << std::endl;
+
+		if (strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))
+		{
+			break;
+		}
+		serialList.pop_back();
+	}
+	auto finalCOMName = serialList.back();
+	return finalCOMName;
+}
+std::vector<std::string> SerialPort::_SerialList()
+{
+	std::vector<std::string> serialList;
+	std::string COMName("COM"), queryName("");
+	char bufferTragetPath[5000];
+	std::size_t path_size(0);
+
+	//test each COM name to get the one used by the system and get his description name
+	for (int i(0); i < 255; i++)
+	{
+		queryName = COMName + std::to_string(i);
+
+		//Query the path of the COMName
+		path_size = QueryDosDeviceA(queryName.c_str(), bufferTragetPath, 5000);
+		if (path_size != 0) {
+			serialList.push_back(queryName);
+		}
+	}
+	return serialList;
 }
 void SerialPort::HelloWorld()
 {
