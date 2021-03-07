@@ -2,12 +2,12 @@
 
 #include <Windows.h>
 #include <iostream>
-#include "../../DriverCore/DriverCore/DriverCore.h"
+#include "..\..\DriverCore\src\DriverCore.h"
 
 int main()
 {
 	//load dllinto addr space of client proc
-	HMODULE hDLL = LoadLibraryExW(L"../Debug/DriverCore.dll", nullptr, 0);
+	HMODULE hDLL = LoadLibraryExW(LR"(..\..\DriverCore\bin\DriverCore.dll)", nullptr, 0);
 	if (!hDLL) {
 		std::cout << "Cannot load DLL ! " << GetLastError();
 		return ERROR;
@@ -21,6 +21,7 @@ int main()
 		return ERROR;
 	}
 	SerialPort* CSerialPort = pSerialPort();
+	getchar();
 
 	return 0;
 }

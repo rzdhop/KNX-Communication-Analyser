@@ -1,0 +1,9 @@
+#Build Test App
+SRC = src\DriverApp.cpp
+DLL = ..\DriverCore\bin\DriverCore.dll
+OUT = bin\DriverApp.exe
+
+all: $(SRC) $(DLL)
+	@echo Compiling $(SRC)
+	g++ $(SRC) -o $(OUT)
+	@echo Successfully Compilled into $(OUT)

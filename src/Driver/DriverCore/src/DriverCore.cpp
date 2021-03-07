@@ -123,6 +123,7 @@ std::string SerialPort::_w_to_s(std::wstring WSTRING)
 std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 {
 	auto numberOfSerial = serialList.size();
+	if (!numberOfSerial)return "";
 	char bufferPathFriendlyName[5000]; 
 	std::string physicalDeviceObjectName;
 	std::size_t lastPos;
