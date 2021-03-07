@@ -2,9 +2,15 @@
 SRC  = src\DriverCore.cpp
 OUT  = bin\DriverCore.dll
 
-all: $(SRC)
-	@echo Use "nmake DLL" to compile DLL
-DLL: $(SRC)
+all: HELP
+
+HELP:
+	@echo Use "nmake DLL_<x64, x86>"
+DLL_x64: $(SRC)
+	@echo Compiling DLL from $(SRC) 
+	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX64\x64\cl.exe" /w $(SRC) /EHsc /link /DLL /MACHINE:X64 /SUBSYSTEM:WINDOWS /OUT:$(OUT)
+	@echo DLL compiled into $(OUT)
+DLL_x86: $(SRC)
 	@echo Compiling DLL from $(SRC) 
 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX64\x86\cl.exe" /w $(SRC) /EHsc /link /DLL /MACHINE:X86 /SUBSYSTEM:WINDOWS /OUT:$(OUT)
 	@echo DLL compiled into $(OUT)
