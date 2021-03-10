@@ -2,12 +2,15 @@
 
 #include <Windows.h>
 #include <iostream>
+#include <string>
+#include <vector>
 #include "..\..\DriverCore\src\DriverCore.h"
 
 int main()
 {
+	std::vector<std::string>receivedChar;
 	//load dllinto addr space of client proc
-	HMODULE hDLL = LoadLibraryExW(LR"(..\..\DriverCore\bin\DriverCore.dll)", nullptr, 0);
+	HMODULE hDLL = LoadLibraryExW(LR"(..\..\DriverCore\DriverCore.dll)", nullptr, 0);
 	if (!hDLL) {
 		std::cout << "Cannot load DLL ! " << GetLastError();
 		return ERROR;
@@ -21,7 +24,15 @@ int main()
 		return ERROR;
 	}
 	SerialPort* CSerialPort = pSerialPort();
-	getchar();
+	
+#define BUFF_SIZE 8
+
+	char Buffer[BUFF_SIZE];
+	std::string strBuff;
+	if (CSerialPort->readSerialPort(Buffer, BUFF_SIZE))
+	{
+		strBuff = Buffer;
+	}
 
 	return 0;
 }

@@ -1,3 +1,17 @@
+/*
+* Author : VERDU Rida 
+*
+* This DLL has been developped to be implemented into the main
+* application. 
+* This DLL Conain :
+*	- Exportation of SerialPort* class
+* 	- Methods od SerialPort
+*
+* This DLL has been developped by VERDU Rida (20yo) for a final
+* project of the 2nd year BTECH HND at Dirderot High School
+* during the year 2021 
+*/
+
 #define WIN32_LEAN_AND_MEAN
 #define BAUDRATE 9600
 #define MAX_KEY_LENGTH 255
@@ -27,7 +41,7 @@ SerialPort::SerialPort()
 
 	std::cout << "Port name: " << this->_portName << std::endl;
 	//Init I/O stream windows handler
-	this->_streamHandle = CreateFileA((LPCSTR)this->_portName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	this->_streamHandle = CreateFileA(this->_portName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (this->_streamHandle == INVALID_HANDLE_VALUE) {
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
 			std::cout << "ERROR: Handle was not attached. Reason: " << this->_portName << " not available\n";
@@ -50,8 +64,10 @@ SerialPort::SerialPort()
 		dcbSerialParameters.Parity = NOPARITY;
 		dcbSerialParameters.fDtrControl = DTR_CONTROL_ENABLE;
 
+
+
 		if (!SetCommState(this->_streamHandle, &dcbSerialParameters)) {
-			std::cout << "ALERT: could not set Serial port parameters\n";
+			std::cout << "ALERT: could not set Serial port parameters" << GetLastError() << std::endl;
 			return;
 		}
 		else {
@@ -88,12 +104,11 @@ int SerialPort::readSerialPort(char* buffer, unsigned int buf_size)
 	if (this->_status.cbInQue > 0) { //check the number of bytes received but not read by ReadFile
 		if (this->_status.cbInQue > buf_size) {
 			toRead = buf_size;
+			//Read Bytes from serial
+			if (ReadFile(this->_streamHandle, buffer, toRead, &bytesRead, NULL)) return bytesRead;
 		}
 		else toRead = this->_status.cbInQue;
 	}
-
-	//Read Bytes from serial
-	if (ReadFile(this->_streamHandle, buffer, toRead, &bytesRead, NULL)) return bytesRead;
 
 	return 0;
 }
@@ -101,51 +116,32 @@ bool SerialPort::isConnected()
 {
 	return this->_connState;
 }
-/*
-std::string SerialPort::_w_to_s(std::wstring WSTRING)
-{
-	std::setlocale(LC_ALL, "");
-	const std::locale locale("");
-	typedef std::codecvt<wchar_t, char, std::mbstate_t> converter_type;
-	const converter_type& converter = std::use_facet<converter_type>(locale);
-	std::vector<char> to(WSTRING.length() * converter.max_length());
-	std::mbstate_t state;
-	const wchar_t* from_next;
-	char* to_next;
-	const converter_type::result result = converter.out(state, WSTRING.data(), WSTRING.data() + WSTRING.length(), from_next, &to[0], (&to[0] + to.size()), to_next);
-	if (result == converter_type::ok or result == converter_type::noconv) {
-		const std::string s(&to[0], to_next);
-		return s;
-	}
-	return "Error";
-}
-*/
 std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 {
 	auto numberOfSerial = serialList.size();
-	if (!numberOfSerial)return "";
+	if (!numberOfSerial) return "";
 	char bufferPathFriendlyName[5000]; 
 	std::string physicalDeviceObjectName;
 	std::size_t lastPos;
 
 	for (size_t i(0); i < numberOfSerial; i++)
 	{
-		std::cout << "seriallist testing Name : " <<serialList.back() << std::endl;
 		QueryDosDeviceA(serialList.back().c_str(), bufferPathFriendlyName, 5000);
 
 		physicalDeviceObjectName = bufferPathFriendlyName;
-		lastPos = physicalDeviceObjectName.find_last_of("\\");
+		lastPos = physicalDeviceObjectName.find_last_of(R"(\)");
+		physicalDeviceObjectName = physicalDeviceObjectName.substr(lastPos + 1);
 
-		std::cout <<"Friendly Name : "  << physicalDeviceObjectName.substr(lastPos+1) << " --- Full Path : " << bufferPathFriendlyName << std::endl;
+		std::cout <<"Friendly Name : |"  << physicalDeviceObjectName << "| --- Full Path : " << bufferPathFriendlyName << std::endl;
+		
 
-		if (strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))
+		if (!strcmp(physicalDeviceObjectName.c_str(), "ProlificSerial0") || !strcmp(physicalDeviceObjectName.c_str(), "VCP0") || !strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))
 		{
-			break;
+			return serialList.back();
 		}
 		serialList.pop_back();
 	}
-	auto finalCOMName = serialList.back();
-	return finalCOMName;
+	return "";
 }
 std::vector<std::string> SerialPort::_SerialList()
 {
