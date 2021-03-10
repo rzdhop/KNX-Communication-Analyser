@@ -1,0 +1,27 @@
+//TEST ----- https://www.cplusplus.com/reference/string/string/substr/
+
+ok, so: FOR THE CONTROL
+
+for x in range (LONGUEUR de trameRecueKNX) {
+    if(x % 10 == 0)
+    {
+        champ = "";
+        parity = 0
+    }
+
+    //parity of the frame (don't know how it's works)
+    if(w % 13 == 9)
+    {
+        parity += (trameRecueKNX TABLEAU)
+        total = champ + total
+    }
+
+    if (x % 13 = 10 || x % 12 = 11 || x % 12 = 12)
+    {
+        GO TO NEXT METHOD
+    }
+
+    else
+    {
+        
+    }
