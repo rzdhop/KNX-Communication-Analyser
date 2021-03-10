@@ -1,27 +1,32 @@
 //TEST ----- https://www.cplusplus.com/reference/string/string/substr/
 
-ok, so: FOR THE CONTROL
+UPDATE: THE FRAME PARITY IS ALREADY INCLUDED IN THE RZDHOP DRIVER.
 
-for x in range (LONGUEUR de trameRecueKNX) {
-    if(x % 10 == 0)
-    {
-        champ = "";
-        parity = 0
-    }
+-------------------------------
 
-    //parity of the frame (don't know how it's works)
-    if(w % 13 == 9)
-    {
-        parity += (trameRecueKNX TABLEAU)
-        total = champ + total
-    }
+Petit rappel sur les différents champs du protocole KNX (zsource guillaume, à vérifier sur la docu):
 
-    if (x % 13 = 10 || x % 12 = 11 || x % 12 = 12)
-    {
-        GO TO NEXT METHOD
-    }
+Octet de contrôle: de 0 à 8
+Adresse source: de 8 à 24
+Adresse destination: de 24 à 40
+Type cast: de 40 à 41
+CR: de 41 à 44
+Longueur de la trame: 44 à 48
+Sécurité: -16 à -8
+Acquittement: -8
 
-    else
-    {
-        
-    }
+
+SI ON EN SUIT LE GRAPHIQUE DU KNX:----------
+
+une variable de 16 biots pour l'adresse d'expétiteur
+une adresse de 17 bits pour l'adresse du testinateur
+une variable de 3 pour le CR
+puis une variable de 4 pour la Longueur
+LES DONNEES ensuite sont variables, elles dépendent de la longueur obtenue précédemment.
+Enfin, les 8 bits de sécurité.
+
+SOIT POUR EXEMPLE.................
+
+dans l'autre fichier
+
+WARN --> https://www.cplusplus.com/reference/string/to_string/
