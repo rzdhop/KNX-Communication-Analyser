@@ -82,7 +82,7 @@ SerialPort::~SerialPort()
 {
 	if (this->_connState)
 	{
-		this->_connState;
+		this->_connState = FALSE;
 		this->_CloseConn();
 	}
 }
