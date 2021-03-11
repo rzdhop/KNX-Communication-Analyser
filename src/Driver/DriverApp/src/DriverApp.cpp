@@ -8,31 +8,14 @@
 
 int main()
 {
-	std::vector<std::string>receivedChar;
-	//load dllinto addr space of client proc
-	HMODULE hDLL = LoadLibraryExW(LR"(..\..\DriverCore\DriverCore.dll)", nullptr, 0);
-	if (!hDLL) {
-		std::cout << "Cannot load DLL ! " << GetLastError();
-		return ERROR;
-	}
+	std::cout << "Initialising Serial Port";
 
-	//Resolve Objects Addr
-	using GreetingType = SerialPort * (__cdecl*)(); //type def ptr to func w/ retType<void> argv/c<void>
-	GreetingType pSerialPort = reinterpret_cast<GreetingType>(GetProcAddress(hDLL, "CreateSerialPort"));
-	if (!pSerialPort) {
-		std::cout << "Cannot load Function ! " << GetLastError();
-		return ERROR;
-	}
-	SerialPort* CSerialPort = pSerialPort();
+	SerialPort* CSerialPort = _InitSerialPort();
 	
-#define BUFF_SIZE 8
+	if (CSerialPort == nullptr) std::cout << std::endl << "Errorno :" << GetLastError() << std::endl;
+	std::cout << "Binding and reading port: " << CSerialPort->getPortName() << std::endl;
+	while(1) std::cout << readSerialBuffer(CSerialPort, 20);
 
-	char Buffer[BUFF_SIZE];
-	std::string strBuff;
-	if (CSerialPort->readSerialPort(Buffer, BUFF_SIZE))
-	{
-		strBuff = Buffer;
-	}
 
 	return 0;
 }
