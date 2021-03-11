@@ -36,7 +36,7 @@ SerialPort::SerialPort()
 	this->_connState = FALSE;
 
 	//debug cond
-	auto tmp = this->_autoSelectPort(this->_SerialList());
+	auto tmp =  this->_autoSelectPort(this->_SerialList());
 	this->_portName = tmp.c_str();
 
 	std::cout << "Port name: " << this->_portName << std::endl;
@@ -82,7 +82,7 @@ SerialPort::~SerialPort()
 {
 	if (this->_connState)
 	{
-		this->_connState;
+		this->_connState = FALSE;
 		this->_CloseConn();
 	}
 }
@@ -119,7 +119,7 @@ bool SerialPort::isConnected()
 std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 {
 	auto numberOfSerial = serialList.size();
-	if (!numberOfSerial) return "";
+	if (!numberOfSerial) {std::cout << "Checkpoint"; return "";}
 	char bufferPathFriendlyName[5000]; 
 	std::string physicalDeviceObjectName;
 	std::size_t lastPos;
@@ -166,4 +166,8 @@ std::vector<std::string> SerialPort::_SerialList()
 void SerialPort::HelloWorld()
 {
 	std::cout << "Hello World !\n";
+}
+std::string SerialPort::getPortName()
+{
+	return this->_portName;
 }
