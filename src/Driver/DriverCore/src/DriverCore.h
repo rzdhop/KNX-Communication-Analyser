@@ -48,19 +48,19 @@ SerialPort* _InitSerialPort()
 std::string readSerialBuffer(SerialPort* LPCSerialPort, const std::size_t buffer_size)
 {
 	char* Buffer = new char[buffer_size];
-	std::string strBuff;
+	std::string strBuffer;
 	if (LPCSerialPort->readSerialPort(Buffer, buffer_size)) 
 	{
-		strBuff = Buffer;
-		strBuff = strBuff.substr(0, buffer_size);
-		for(int i(0); i < strBuff.size(); i++)
+		strBuffer = Buffer;
+		auto strBufferSize = strBuffer.size();
+		strBuffer = "";
+		for (int i(0); i < strBufferSize; i++)
 		{
-			strBuff[i] = (char(abs(int(strBuff[i]))));
-			std::cout << << std::endl;
+			strBuffer += std::to_string(abs(int(Buffer[i])));	
 		}
+		std::cout << strBuffer << std::endl;
 		delete[] Buffer;
-		std::cout << strBuff << std::endl;
-		return strBuff;
+		return strBuffer;
 	}
 	delete[] Buffer;
 	return "";
