@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 class SerialPort
 {
@@ -54,9 +55,14 @@ std::string readSerialBuffer(SerialPort* LPCSerialPort, const std::size_t buffer
 		strBuffer = Buffer;
 		auto strBufferSize = strBuffer.size();
 		strBuffer = "";
+		std::stringstream strhexBufffer;
+
 		for (int i(0); i < strBufferSize; i++)
 		{
-			strBuffer += std::to_string(abs(int(Buffer[i])));	
+			strhexBufffer << std::hex << abs(int(Buffer[i]));
+			strBuffer += strhexBufffer.str();
+			strhexBufffer.str(std::string());
+			strhexBufffer << " ";
 		}
 		std::cout << strBuffer << std::endl;
 		delete[] Buffer;
