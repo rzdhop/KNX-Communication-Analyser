@@ -8,19 +8,14 @@
 
 int main()
 {
-	std::cout << "Initialising Serial Port";
+	std::cout << std::endl << "[+] Initialising Serial Port" << std::endl;
 
 	SerialPort* CSerialPort = _InitSerialPort();
-	
-	if (CSerialPort == nullptr) std::cout << std::endl << "Errorno :" << GetLastError() << std::endl;
 
-	std::cout << "Binding and reading port: " << CSerialPort->getPortName() << std::endl;
+	if (CSerialPort == nullptr) std::cout << std::endl << "[-] Errorno :" << GetLastError() << std::endl;
 
-	while(1) 
-	{
-		std::cout << readSerialBuffer(CSerialPort, 8);
-	}
-
+	std::cout << "[+] Reading COM port :" << std::endl;
+	while(1) readSerialBuffer(CSerialPort, 8);
 
 	return 0;
 }

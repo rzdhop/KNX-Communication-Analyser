@@ -8,25 +8,23 @@
 #include <Windows.h>
 #include <vector>
 #include <string>
+#include <iostream>
 
 class SerialPort
 {
 private:
 	HANDLE _streamHandle;
 	bool _connState;
-	const char* _portName;
+	std::string _portName;
 	COMSTAT _status;
 	DWORD _errors;
 public:
 	SerialPort();
 	~SerialPort();
-
 	virtual void _CloseConn();
-	virtual void HelloWorld();
 	virtual bool isConnected();
-	virtual std::string getPortName();
 	virtual std::vector<std::string> _SerialList();
-	virtual std::string _autoSelectPort(std::vector<std::string> serialList);
+	virtual void _autoSelectPort(std::vector<std::string> serialList);
 	virtual int readSerialPort(char* buffer, unsigned int buf_size);
 };
 
@@ -54,7 +52,16 @@ std::string readSerialBuffer(SerialPort* LPCSerialPort, const std::size_t buffer
 	if (LPCSerialPort->readSerialPort(Buffer, buffer_size)) 
 	{
 		strBuff = Buffer;
-		return strBuff.substr(0, buffer_size);
+		strBuff = strBuff.substr(0, buffer_size);
+		for(int i(0); i < strBuff.size(); i++)
+		{
+			strBuff[i] = (char(abs(int(strBuff[i]))));
+			std::cout << << std::endl;
+		}
+		delete[] Buffer;
+		std::cout << strBuff << std::endl;
+		return strBuff;
 	}
+	delete[] Buffer;
 	return "";
 }

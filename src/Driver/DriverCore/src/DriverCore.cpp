@@ -21,8 +21,6 @@
 #include <iostream>
 #include <windows.h>
 #include <string>
-#include <clocale>
-#include <locale>
 
 extern "C" __declspec(dllexport) SerialPort * __cdecl CreateSerialPort()
 {
@@ -36,24 +34,24 @@ SerialPort::SerialPort()
 	this->_connState = FALSE;
 
 	//debug cond
-	auto tmp =  this->_autoSelectPort(this->_SerialList());
-	this->_portName = tmp.c_str();
+	this->_autoSelectPort(this->_SerialList());
 
-	std::cout << "Port name: " << this->_portName << std::endl;
+	std::cout << "[*] Port name: " << this->_portName << std::endl;
+
 	//Init I/O stream windows handler
-	this->_streamHandle = CreateFileA(this->_portName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	this->_streamHandle = CreateFileA(this->_portName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (this->_streamHandle == INVALID_HANDLE_VALUE) {
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
-			std::cout << "ERROR: Handle was not attached. Reason: " << this->_portName << " not available\n";
+			std::cout << "[-] ERROR: Handle was not attached. Reason: " << this->_portName << " not available\n";
 		}
-		else { printf("Undefined Error ! %d \n", GetLastError()); return; }
+		else { std::printf("[-] Undefined Error ! %d \n", GetLastError()); return; }
 	}
 
 	//Declare pointer to LPDCB struct (serialCOM parameters)
 	DCB dcbSerialParameters = { 0 };
 
 	if (!GetCommState(this->_streamHandle, &dcbSerialParameters)) {
-		std::cout << "Failed to retreive current serial parameter ! \n";
+		std::cout << "[-] Failed to retreive current serial parameter ! \n";
 		return;
 	}
 	else {
@@ -64,10 +62,8 @@ SerialPort::SerialPort()
 		dcbSerialParameters.Parity = NOPARITY;
 		dcbSerialParameters.fDtrControl = DTR_CONTROL_ENABLE;
 
-
-
 		if (!SetCommState(this->_streamHandle, &dcbSerialParameters)) {
-			std::cout << "ALERT: could not set Serial port parameters" << GetLastError() << std::endl;
+			std::cout << "[-] ERROR: could not set Serial port parameters" << GetLastError() << std::endl;
 			return;
 		}
 		else {
@@ -78,6 +74,7 @@ SerialPort::SerialPort()
 		}
 	}
 }
+
 SerialPort::~SerialPort()
 {
 	if (this->_connState)
@@ -88,9 +85,9 @@ SerialPort::~SerialPort()
 }
 void SerialPort::_CloseConn()
 {
-	std::cout << "closing port";
-	if (this->_connState) CloseHandle(this->_streamHandle);
-	else std::cout << "There is no connection to Terminate \n";
+	std::cout << "[+] closing port";
+	if (!this->_connState) CloseHandle(this->_streamHandle);
+	else std::cout << "[-] There is no connection to Terminate \n";
 	return;
 }
 int SerialPort::readSerialPort(char* buffer, unsigned int buf_size)
@@ -116,10 +113,10 @@ bool SerialPort::isConnected()
 {
 	return this->_connState;
 }
-std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
+void SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 {
 	auto numberOfSerial = serialList.size();
-	if (!numberOfSerial) {std::cout << "Checkpoint"; return "";}
+	if (!numberOfSerial) {return;}
 	char bufferPathFriendlyName[5000]; 
 	std::string physicalDeviceObjectName;
 	std::size_t lastPos;
@@ -132,16 +129,16 @@ std::string SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 		lastPos = physicalDeviceObjectName.find_last_of(R"(\)");
 		physicalDeviceObjectName = physicalDeviceObjectName.substr(lastPos + 1);
 
-		std::cout <<"Friendly Name : |"  << physicalDeviceObjectName << "| --- Full Path : " << bufferPathFriendlyName << std::endl;
+		std::cout <<"[+] Friendly Name : |"  << physicalDeviceObjectName << "| --- Full Path : " << bufferPathFriendlyName << std::endl;
 		
-
 		if (!strcmp(physicalDeviceObjectName.c_str(), "ProlificSerial0") || !strcmp(physicalDeviceObjectName.c_str(), "VCP0") || !strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))
 		{
-			return serialList.back();
+			this->_portName = serialList[i];
+			return;
 		}
 		serialList.pop_back();
 	}
-	return "";
+	return;
 }
 std::vector<std::string> SerialPort::_SerialList()
 {
@@ -154,7 +151,6 @@ std::vector<std::string> SerialPort::_SerialList()
 	for (int i(0); i < 255; i++)
 	{
 		queryName = COMName + std::to_string(i);
-
 		//Query the path of the COMName
 		path_size = QueryDosDeviceA(queryName.c_str(), bufferTragetPath, 5000);
 		if (path_size != 0) {
@@ -162,12 +158,4 @@ std::vector<std::string> SerialPort::_SerialList()
 		}
 	}
 	return serialList;
-}
-void SerialPort::HelloWorld()
-{
-	std::cout << "Hello World !\n";
-}
-std::string SerialPort::getPortName()
-{
-	return this->_portName;
 }
