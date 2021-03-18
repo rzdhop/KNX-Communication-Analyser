@@ -53,13 +53,16 @@ std::string readSerialBuffer(SerialPort* LPCSerialPort, const std::size_t buffer
 	if (LPCSerialPort->readSerialPort(Buffer, buffer_size)) 
 	{
 		strBuffer = Buffer;
+		std::string strFlagBuffer = Buffer;
+		strFlagBuffer = strFlagBuffer.substr(0, buffer_size);
+		strBuffer = strBuffer.substr(0, buffer_size);
 		auto strBufferSize = strBuffer.size();
 		strBuffer = "";
 		std::stringstream strhexBufffer;
 
 		for (int i(0); i < strBufferSize; i++)
 		{
-			strhexBufffer << std::hex << abs(int(Buffer[i]));
+			strhexBufffer << std::hex << abs(int(strFlagBuffer[i]));
 			strBuffer += strhexBufffer.str();
 			strhexBufffer.str(std::string());
 		}
