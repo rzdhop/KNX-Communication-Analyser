@@ -36,21 +36,24 @@ SerialPort::SerialPort()
 	//debug cond
 	this->_autoSelectPort(this->_SerialList());
 
-	std::cout << "[*] Port name: " << this->_portName << std::endl;
-
 	//Init I/O stream windows handler
 	this->_streamHandle = CreateFileA(this->_portName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (this->_streamHandle == INVALID_HANDLE_VALUE) {
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+			//***********************ERROR************************
 			std::cout << "[-] ERROR: Handle was not attached. Reason: " << this->_portName << " not available\n";
 		}
-		else { std::printf("[-] Undefined Error ! %d \n", GetLastError()); return; }
+		else {
+			//***********************ERROR************************
+			std::printf("[-] Undefined Error ! %d \n", GetLastError());
+			return; }
 	}
 
 	//Declare pointer to LPDCB struct (serialCOM parameters)
 	DCB dcbSerialParameters = { 0 };
 
 	if (!GetCommState(this->_streamHandle, &dcbSerialParameters)) {
+		//***********************ERROR************************
 		std::cout << "[-] Failed to retreive current serial parameter ! \n";
 		return;
 	}
@@ -63,6 +66,7 @@ SerialPort::SerialPort()
 		dcbSerialParameters.fDtrControl = DTR_CONTROL_ENABLE;
 
 		if (!SetCommState(this->_streamHandle, &dcbSerialParameters)) {
+			//***********************ERROR************************
 			std::cout << "[-] ERROR: could not set Serial port parameters" << GetLastError() << std::endl;
 			return;
 		}
@@ -87,7 +91,10 @@ void SerialPort::_CloseConn()
 {
 	std::cout << "[+] closing port";
 	if (!this->_connState) CloseHandle(this->_streamHandle);
-	else std::cout << "[-] There is no connection to Terminate \n";
+	else {
+		//***********************ERROR************************v
+		std::cout << "[-] There is no connection to Terminate \n";
+	}
 	return;
 }
 int SerialPort::readSerialPort(char* buffer, unsigned int buf_size)
@@ -128,8 +135,6 @@ void SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 		physicalDeviceObjectName = bufferPathFriendlyName;
 		lastPos = physicalDeviceObjectName.find_last_of(R"(\)");
 		physicalDeviceObjectName = physicalDeviceObjectName.substr(lastPos + 1);
-
-		std::cout <<"[+] Friendly Name : |"  << physicalDeviceObjectName << "| --- Full Path : " << bufferPathFriendlyName << std::endl;
 		
 		if (!strcmp(physicalDeviceObjectName.c_str(), "ProlificSerial0") || !strcmp(physicalDeviceObjectName.c_str(), "VCP0") || !strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))
 		{
