@@ -30,3 +30,53 @@ SOIT POUR EXEMPLE.................
 dans l'autre fichier
 
 WARN --> https://www.cplusplus.com/reference/string/to_string/
+
++----------------------------------+--------------------------+
+
+Trame "compressée" à tester:: BC120A3303E100810BCC
+
+avec: 10111100 qui correspond au binaire de BC (caractère de contrôle)
+(10)-useless // (1) [possible avec le 0 - répétition ou adresse normale] // (1) // Priorité (
+
+    0 - Repetition
+    1 - Normal
+
+    00 - SYSTEM
+    10 - ALARM
+    01 - HIGH
+    11 - Low ((switch case utile))
+
++----
+Les 4 caractères suivants sont l'adresse physique de l'EXPEDITEUR
+Puis, les 4 autres sont l'adresse du DESTINATAIRE
+
+genre là on a 10-0B et 10-03
+
+-//------
+
+le e1 correspond à plein de choses:
+en binaire ça donne 1 110 0001
+
+1: c'est une adresse de groupe
+110 == 6 = compteur de routage (comme un TTL)
+0001 = longieur de la donnée (ici 2 octets)
+
+<<--------
+
+//E1 et 0081 les données (on verra ça plus tard)
+
+!----!
+
+0B: parité (on s'en fout)
+
+CC: acquittement (sera à faire plus tard)
+
+
+---------------------
+
+6 AVRIL
+
+demain a 12h
+10H
+17H
+/------//////////////////

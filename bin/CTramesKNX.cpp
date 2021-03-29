@@ -1,4 +1,4 @@
-//PLEASE DO NOT USE THIS FILE before veryfing.
+//WARNING PLEASE DO NOT USE THIS FILE FOR NOW!! use methods.cpp instead
 
 class CTrameKNX {
     private:
@@ -28,7 +28,7 @@ class CTrameKNX {
         unsigned char calculerChecksum();
 };
 
-/* unsigned char CTrameKNX::getNombreOctetsData()
+unsigned char CTrameKNX::getNombreOctetsData()
 {
     //nothing for now
 }
@@ -50,7 +50,12 @@ unsigned char CTrameKNX::m_octetControle()
 
 unsigned short int CTrameKNX::m_adresseDestinataire()
 {
-    return 0;
+    std::string temp0;
+
+    //std::string pi = std::to_string(receivedKNXFrame);
+    temp0 = receivedKNXFrame.substr(24, 8);//old: 16
+    
+    return temp0;
 }
 
 unsigned char CTrameKNX::m_octet_SiAdresseGroupe_CompteurRoutage_longueurData()
@@ -125,5 +130,3 @@ unsigned char CTrameKNX::getNombreOctetsData()
 {
     return 0;
 }
-
-*/
