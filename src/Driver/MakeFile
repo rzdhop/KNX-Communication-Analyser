@@ -1,0 +1,34 @@
+MKFILE1  = .\DriverCore
+MKFILE2  = .\DriverApp
+EXEPATH  = ".\DriverApp\bin\DriverApp.exe"
+
+all: debug_Compile_all
+
+Compile_EXE:
+	@echo [+] Compiling DriverApp.exe 
+	@$(MAKE) -C $(MKFILE2)
+
+Compile_DLL:
+	@echo [+] Compiling DriverCore.dll
+	@$(MAKE) -C $(MKFILE1)
+
+Compile_all:
+	@echo [+] Compiling DriverCore.dll
+	@$(MAKE) -C $(MKFILE1)
+	@echo [+] Compiling DriverApp.exe 
+	@$(MAKE) -C $(MKFILE2)
+	@echo [+] Done Compiling DriverCore.dll & DriverApp.exe
+
+debug:
+	@echo [+] Exec DriverApp.exe in $(EXEPATH)
+	@$(EXEPATH)
+
+debug_compile_all:
+	@echo [+] Compiling DriverCore.dll
+	@$(MAKE) -C $(MKFILE1)
+	@echo [+] Compiling DriverApp.exe 
+	@$(MAKE) -C $(MKFILE2)
+	@echo [+] Done Compiling DriverCore.dll And DriverApp.exe
+	@echo [+] Exec DriverApp.exe in $(EXEPATH)
+	$(EXEPATH)
+	

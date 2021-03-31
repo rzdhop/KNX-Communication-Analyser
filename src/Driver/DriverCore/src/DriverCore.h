@@ -66,7 +66,7 @@ std::string readSerialBuffer(SerialPort* LPCSerialPort, const std::size_t buffer
 			strBuffer += strhexBufffer.str();
 			strhexBufffer.str(std::string());
 		}
-		std::cout << strBuffer << std::endl;
+		std::cout << strBuffer;
 		delete[] Buffer;
 		return strBuffer;
 	}
