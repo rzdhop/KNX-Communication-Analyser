@@ -2,6 +2,12 @@
 
 #include <iostream>
 #include "argh.h"
+#include "convertmethods.hpp"
+#include "decode.hpp"
+#include <string>
+#include <bitset>
+#include <cstring>
+#include <sstream>
 
 int main(int, char* argv[])
 {
@@ -19,27 +25,27 @@ int main(int, char* argv[])
 
     if (cmdl[{ "-h", "--help" }])
     {
-        std::cout << "Welcome to KNX Communications Analyser. This program is designed for Windows only.\n";
-        std::cout << "For now, this program is in COMMAND LINE ONLY.\n";
-        std::cout << "By default, the program is autodetecting ports on your computer. You also can specify one particular port by adding -p at the execution.\n";
-        std::cout << "\n";
+        std::cout << "Welcome to KNX Communications Analyser. This program is designed for Windows only." << std::endl;
+        std::cout << "For now, this program is in COMMAND LINE ONLY." << std::endl;
+        std::cout << "By default, the program is autodetecting ports on your computer. You also can specify one particular port by adding -p at the execution." << std::endl;
+        std::cout << std::endl;
         //here comes the different arguments (-h; -p; -ad)
-        std::cout << "MIT License - rzdhop, VictorFS78 and Soajoh\n";
+        std::cout << "MIT License - rzdhop, VictorFS78 and Soajoh" << std::endl;
     }
 
     if (cmdl[{ "-p", "--manualport" }])
     {
-        std::cout << "\n***WARNING*** You're about to specify one specific port and override autodetection.\n --------> Are you sure about that? Please press Y : ";
+        std::cout << "\n***WARNING*** You're about to specify one specific port and override autodetection.\n --------> Are you sure about that? Please press Y : " << std::endl;
         char specificPortConfirmation;
         std::cin >> specificPortConfirmation;
 
         if (specificPortConfirmation == 'Y')
 	    {
-            std::cout << "THE FOLLOWING COM PORTS ARE BEEN FOUND:\n";
+            std::cout << "THE FOLLOWING COM PORTS ARE BEEN FOUND:" << std::endl;
             //Call of the driverapp.exe created by rdzop
-            std::cout << "If you don't see the port you want to use, or see no ports, click on the Cortana bar, then 'Device Manager', and then, click on 'COM Ports' to see if your serial ports are been detected by your computer.\n";
+            std::cout << "If you don't see the port you want to use, or see no ports, click on the Cortana bar, then 'Device Manager', and then, click on 'COM Ports' to see if your serial ports are been detected by your computer." << std::endl;
 
-            std::cout << "What port do you want to use?\n";
+            std::cout << "What port do you want to use?" << std::endl;
             //AFTER -- DRAFT ON VICTOR'S PC BUT STILL NOT WORKING.
             //here comes the link to the function who cut the frames
         }
@@ -50,6 +56,97 @@ int main(int, char* argv[])
         }
 
     }
+
+    if (cmdl[{ "-f", "--frame" }])
+    {
+        //here
+    }
+
+    else {std::cout << "??" << std::endl;}
+
+    std::string vbAdress("BC120A3303E100810BCC");
+    //std::string vbAdress("bc1197bbdb71070770a0e79c1117bb7b9ce1008137ff9c11c9672f73b8000bddfc9c17b8d96d71e107b8d0c7");
+
+    
+    Decode adresse1;
+    Logs adresse2;
+    std::ostringstream writeToLogs;
+
+    adresse1.receivedKNXFrame = vbAdress;
+
+    std::cout << "The used frame is : " << adresse1.receivedKNXFrame << std::endl;
+
+
+    std::string tempHeader = adresse1.decode_hed();
+
+    std::string binDataKNXNetworks = adresse1.dataKNXNetworks();
+    std::cout << "The binary of the network KNX is : " << binDataKNXNetworks << std::endl;
+    writeToLogs << "The binary of the network KNX is : " << binDataKNXNetworks << std::endl;
+
+
+    bool typeFrame = adresse1.calcpriority();
+        if (typeFrame == true)
+            {
+                 std::cout << "This frame is a REPETITION";
+                 writeToLogs << "This frame is a REPETITION";
+            }
+
+        if (typeFrame == false)
+            {
+                 std::cout << "This frame is a NORMAL frame";
+                 writeToLogs << "This frame is a NORMAL frame";
+            }
+
+
+    std::string tempPriorityFrame = adresse1.extPriority();
+
+    std::cout << " and the priority of emission was " << tempPriorityFrame << std::endl;
+    writeToLogs << " and the priority of emission was " << tempPriorityFrame << std::endl;
+    
+    //std::string vSourceAdress = sourceAdress(vbAdress);
+    std::string tempSourceAdress = adresse1.sourceAdress();
+    std::cout << "The source adress is : " << tempSourceAdress << std::endl;
+    writeToLogs << "The source adress is : " << tempSourceAdress << std::endl;
+
+    std::string tempDestinationAdress = adresse1.destinationAdress();
+    std::cout << "The destination adress is : " << tempDestinationAdress << std::endl; //jusqu'à là ok, ne pas toucher
+    writeToLogs << "The destination adress is : " << tempDestinationAdress << std::endl;
+
+    unsigned int tempLongFrame = adresse1.longFrame();
+    std::cout << "The length of the frame is : " << tempLongFrame << std::endl;
+    writeToLogs << "The length of the frame is : " << tempLongFrame << std::endl;
+
+    bool tempIsGroupAdress = adresse1.isGroupAddress();
+        if (tempIsGroupAdress == true)
+            {
+                 std::cout << "This frame is part of a group";
+                 writeToLogs << "This frame is part of a group";
+            }
+
+        if (tempIsGroupAdress == false)
+            {
+                 std::cout << "This frame isn't part of a group";
+                 writeToLogs << "This frame isn't part of a group";
+            }
+
+    unsigned int tempTTL = adresse1.TTL();
+    std::cout << "The TTL is :" << tempTTL << std::endl; //Il faut mettre le bittojump
+    writeToLogs << "The TTL is :" << tempTTL << std::endl;
+
+    std::string tempHexData = adresse1.hexData();
+    std::cout << "The datas extracted from the frame are : " << tempHexData << std::endl;
+    writeToLogs << "The datas extracted from the frame are : " << tempHexData << std::endl;
+
+    std::string tempParity = adresse1.parity();
+    std::cout << "Finally, the parity byte are : " << tempParity << std::endl;
+    writeToLogs << "Finally, the parity byte are : " << tempParity << std::endl;
+
+    std::cout << "Writing logs...";
+    //temp = "The source adress was " << vbAdress << std::endl; 
+
+    adresse2.tempStr = writeToLogs.str(); //balance string dans les logs
+
+    adresse2.test();
 
     return EXIT_SUCCESS;
 }

@@ -1,4 +1,4 @@
-#include "convert_methods.hpp"
+#include "convertmethods.hpp"
 #include <iostream>
 #include <string>
 #include <bitset>
@@ -21,12 +21,12 @@ int hex_to_dec(char num[]) {
    return temp;
 }
 
-int ch_to_binary()
+std::string ch_to_binary(int received_number)
 {
-    std::string binary = std::bitset<8>(28).to_string(); //convertit la chaîne de caractères en binaire
-    std::cout<<binary<<"\n";
+    std::string binary = std::bitset<8>(received_number).to_string(); //convertit la chaîne de caractères en binaire
+    //std::cout<<binary<<"\n"; for testing purposes only!!!!!
 
-    unsigned long decimal = std::bitset<8>(binary).to_ulong();
-    std::cout<<decimal<<"\n";
-    return 0;
+    //unsigned long decimal = std::bitset<8>(binary).to_ulong();
+    //std::cout<<decimal<<"\n";
+    return binary;
 }

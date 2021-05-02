@@ -33,7 +33,7 @@ WARN --> https://www.cplusplus.com/reference/string/to_string/
 
 +----------------------------------+--------------------------+
 
-Trame "compressée" à tester:: BC120A3303E100810BCC
+Trame "compressée" à tester:: BC120A3303--E1--00810BCC
 
 avec: 10111100 qui correspond au binaire de BC (caractère de contrôle)
 (10)-useless // (1) [possible avec le 0 - répétition ou adresse normale] // (1) // Priorité (
