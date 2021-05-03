@@ -11,6 +11,7 @@
 #include <iostream>
 #include <sstream>
 
+//Definition de la class SerialPort contenant mes fonction pour gérer la communication avec le modudule
 class SerialPort
 {
 private:
@@ -29,23 +30,25 @@ public:
 	virtual int readSerialPort(char* buffer, unsigned int buf_size);
 };
 
+//Fonction d'Initialisation de la class SeriaPort dans le DLL
 SerialPort* _InitSerialPort()
 {
-	//load dllinto addr space of client proc
+	//Charge le DLL dans l'espace d'adresse du processus client
 	HMODULE hDLL = LoadLibraryExW(LR"(..\..\DriverCore\bin\DriverCore.dll)", nullptr, 0);
 	if (!hDLL) {
 		return nullptr;
 	}
 
-	//Resolve Objects Addr
-	using GreetingType = SerialPort * (__cdecl*)(); //type def ptr to func w/ retType<void> argv/c<void>
-	GreetingType pSerialPort = reinterpret_cast<GreetingType>(GetProcAddress(hDLL, "CreateSerialPort"));
+	//Defini le type et le format du code associé au symbol de la class du DLL
+	using GreetingType = SerialPort * (__cdecl*)(); //type def ptr vers func w/ retType<void> argv/c<void>
+	GreetingType pSerialPort = (GreetingType)GetProcAddress(hDLL, "CreateSerialPort");
 	if (!pSerialPort) {
 		return nullptr;
 	}
 	return pSerialPort();
 }
 
+//Api de la class SerialPort pour facilité sont utilisation
 std::string readSerialBuffer(SerialPort* LPCSerialPort, const std::size_t buffer_size)
 {
 	char* Buffer = new char[buffer_size];
