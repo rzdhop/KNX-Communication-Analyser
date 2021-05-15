@@ -22,7 +22,6 @@ public:
         std::string temp0;
         int temp1;
 
-        //std::string pi = std::to_string(receivedKNXFrame);
         temp0 = receivedKNXFrame.substr(0, 2);
 
         char* char_arr;
@@ -39,7 +38,6 @@ public:
     {
             std::string temp0;
 
-            //std::string pi = std::to_string(receivedKNXFrame);
             temp0 = receivedKNXFrame.substr(2, 4); //old: 16
 
             return temp0;
@@ -179,52 +177,35 @@ public:
 
         temp0 = receivedKNXFrame.substr(0, 2);
 
-
-
-        //int mybit_int = (int)(temp0.to_ulong()); //Binary conversion
-        //std::string binary = std::bitset<8>(temp0).to_string();
-        //int temp1 = stoi(temp0);
-
         std::string s = "0xA";
-        //std::stringstream ss;
-        //ss << std::hex << s;
+
         unsigned n;
-        //ss >> n;
         std::bitset<32> b(n);
-        // outputs "00000000000000000000000000001010"
         std::cout << b.to_string() << std::endl;
 
-        //return temp0;
-        //-------UNSURE--------
     }
 
-
-};
-
-
-class Logs
-{
-    public:
-    std::string tempStr;
-    void test()
+    unsigned int verifyAck()
     {
-        std::string const filename("logs.txt");
-        std::ofstream writeLogs(filename.c_str());
+        std::string temp0;
 
-        if(writeLogs)    
+        temp0 = receivedKNXFrame.substr((14 + (lengthOfData* 2)), 2);
+            if (temp0 == "0C")
             {
-                writeLogs << "KNX Communication Analyzer -- ";
-                std::time_t result = std::time(nullptr);
-                writeLogs << std::asctime(std::localtime(&result)) << std::endl;
-
-                writeLogs << tempStr;
-
-                writeLogs << std::endl << "-------------END-" << std::endl;
-                std::cout << "OK" << std::endl;
+                return 0;
             }
-        else
+
+            if (temp0 == "C0")
             {
-                std::cout << "WARNING! Error: unable to create or open logs.txt" << std::endl;
+                return 1;
+            }
+
+            if (temp0 == "CC")
+            {
+                return 2;
             }
     }
+
 };
+
+

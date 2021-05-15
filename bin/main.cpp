@@ -1,5 +1,3 @@
-//MARCH 3RD 2021 --  THIS PROGRAM ISN'T FONCTIONNAL FOR NOW. COMMAND LINE ONLY.
-
 #include <iostream>
 #include "argh.h"
 #include "convertmethods.hpp"
@@ -8,6 +6,7 @@
 #include <bitset>
 #include <cstring>
 #include <sstream>
+#include "logs.hpp"
 
 int main(int, char* argv[])
 {
@@ -16,8 +15,8 @@ int main(int, char* argv[])
         if (cmdl[{ "-ad", "--autodetect" }])
     {
         std::cout << "Welcome to KNX Communications Analyser. Autodetecting COM ports.. It can takes about 1 minute.\n";
-        std::cout << "The following COM ports are been found : " << "COM4" << std::endl;
-        std::cout << "\n";
+        std::cout << "The following COM ports are been found : " << "COM4 *testing purposes only*" << std::endl;
+        std::cout << std::endl;
         //Call of the driverapp.exe created by rdzhop AND select the 1st port (unsure)
 
         //here comes the link to the function who cut the frames
@@ -30,7 +29,8 @@ int main(int, char* argv[])
         std::cout << "By default, the program is autodetecting ports on your computer. You also can specify one particular port by adding -p at the execution." << std::endl;
         std::cout << std::endl;
         //here comes the different arguments (-h; -p; -ad)
-        std::cout << "MIT License - rzdhop, VictorFS78 and Soajoh" << std::endl;
+        std::cout << "MIT License - rzdhop, VictorFS78" << std::endl;
+        return EXIT_SUCCESS;
     }
 
     if (cmdl[{ "-p", "--manualport" }])
@@ -46,27 +46,36 @@ int main(int, char* argv[])
             std::cout << "If you don't see the port you want to use, or see no ports, click on the Cortana bar, then 'Device Manager', and then, click on 'COM Ports' to see if your serial ports are been detected by your computer." << std::endl;
 
             std::cout << "What port do you want to use?" << std::endl;
-            //AFTER -- DRAFT ON VICTOR'S PC BUT STILL NOT WORKING.
-            //here comes the link to the function who cut the frames
+
         }
 
         if (specificPortConfirmation != 'Y')
         {
-            std::cout << "Great. Don't worry. The program will shutdown, and you can reload. By default, you should use -ad \n";
+            std::cout << "Great. Don't worry. The program will shutdown, and you can reload. By default, you should use -ad." << std::endl;
+            return EXIT_SUCCESS;
         }
 
     }
 
+    std::string vbAdress("BC120A3303E100810BCC"); //DEFAULT FRAME IF NOTHING IS SPECIFIED
+
     if (cmdl[{ "-f", "--frame" }])
     {
-        //here
+        std::cout << "Manual frame mode. Please write your frame here and press ENTER : " << std::endl;
+        std::cin >> vbAdress;
+        std::cout << std::endl << std::endl;
+        
     }
 
-    else {std::cout << "??" << std::endl;}
+    if (!cmdl[{ "-f", "--frame", "-p", "--manualport", "-h", "--help", "-ad", "--autodetect"  }]) 
+        {
+            std::cout << std::endl << "WARN: Sorry, you dosen't specified one argument, or the argument you entered is incorrect." << std::endl;
+            std::cout << "      Please try again. If you need help please specify the argument '-h' or '--help'" << std::endl;
+            std::cout << "      If needed, you can read the documentation at https://github.com/rzdhop/KNX-Communication-Analyser" << std::endl << std::endl;
+            return EXIT_SUCCESS;
+        }
 
-    std::string vbAdress("BC120A3303E100810BCC");
-    //std::string vbAdress("bc1197bbdb71070770a0e79c1117bb7b9ce1008137ff9c11c9672f73b8000bddfc9c17b8d96d71e107b8d0c7");
-
+    
     
     Decode adresse1;
     Logs adresse2;
@@ -103,7 +112,6 @@ int main(int, char* argv[])
     std::cout << " and the priority of emission was " << tempPriorityFrame << std::endl;
     writeToLogs << " and the priority of emission was " << tempPriorityFrame << std::endl;
     
-    //std::string vSourceAdress = sourceAdress(vbAdress);
     std::string tempSourceAdress = adresse1.sourceAdress();
     std::cout << "The source adress is : " << tempSourceAdress << std::endl;
     writeToLogs << "The source adress is : " << tempSourceAdress << std::endl;
@@ -119,14 +127,14 @@ int main(int, char* argv[])
     bool tempIsGroupAdress = adresse1.isGroupAddress();
         if (tempIsGroupAdress == true)
             {
-                 std::cout << "This frame is part of a group";
-                 writeToLogs << "This frame is part of a group";
+                 std::cout << "This frame is part of a group" << std::endl;
+                 writeToLogs << "This frame is part of a group" << std::endl;
             }
 
         if (tempIsGroupAdress == false)
             {
-                 std::cout << "This frame isn't part of a group";
-                 writeToLogs << "This frame isn't part of a group";
+                 std::cout << "This frame isn't part of a group" << std::endl;
+                 writeToLogs << "This frame isn't part of a group" << std::endl;
             }
 
     unsigned int tempTTL = adresse1.TTL();
@@ -141,12 +149,30 @@ int main(int, char* argv[])
     std::cout << "Finally, the parity byte are : " << tempParity << std::endl;
     writeToLogs << "Finally, the parity byte are : " << tempParity << std::endl;
 
+    unsigned int tempVerifyAck = adresse1.verifyAck();
+        if (tempVerifyAck == 0)
+            {
+                 std::cout << "This frame was sent with an INCORRECT reception" << std::endl;
+                 writeToLogs << "This frame was sent with an INCORRECT reception" << std::endl;
+            }
+
+        if (tempVerifyAck == 1)
+            {
+                 std::cout << "This frame was sent, but the bus was BUSY! Warning.." << std::endl;
+                 writeToLogs << "This frame was sent, but the bus was BUSY! Warning.." << std::endl;
+            }
+        if (tempVerifyAck == 2)
+            {
+                 std::cout << "This frame was sent, and the reception was correct." << std::endl;
+                 writeToLogs << "This frame was sent, and the reception was correct." << std::endl;
+            }
+
+    std::cout << std::endl;
     std::cout << "Writing logs...";
-    //temp = "The source adress was " << vbAdress << std::endl; 
 
-    adresse2.tempStr = writeToLogs.str(); //balance string dans les logs
+    adresse2.tempStr = writeToLogs.str();
 
-    adresse2.test();
+    adresse2.writingLogs();
 
     return EXIT_SUCCESS;
 }
