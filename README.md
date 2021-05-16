@@ -1,8 +1,3 @@
-## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/rzdhop/KNX-Communication-Analyser/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-<img src="assets/knxworkers-logo.png" width="300">
-
 # KNX-Communication-Analyser
 
 > *By KNXWorkers Inc.*
