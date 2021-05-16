@@ -1,6 +1,6 @@
 # KNX-Communication-Analyser
 
-> *By KNXWorkers Inc.*
+> *By KNXWorkers Inc.* II
 
 [![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)
 [![Standard](https://img.shields.io/badge/C%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
