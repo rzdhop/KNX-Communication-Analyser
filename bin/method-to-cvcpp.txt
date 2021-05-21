@@ -1,0 +1,82 @@
+//TEST ----- https://www.cplusplus.com/reference/string/string/substr/
+
+UPDATE: THE FRAME PARITY IS ALREADY INCLUDED IN THE RZDHOP DRIVER.
+
+-------------------------------
+
+Petit rappel sur les différents champs du protocole KNX (zsource guillaume, à vérifier sur la docu):
+
+Octet de contrôle: de 0 à 8
+Adresse source: de 8 à 24
+Adresse destination: de 24 à 40
+Type cast: de 40 à 41
+CR: de 41 à 44
+Longueur de la trame: 44 à 48
+Sécurité: -16 à -8
+Acquittement: -8
+
+
+SI ON EN SUIT LE GRAPHIQUE DU KNX:----------
+
+une variable de 16 biots pour l'adresse d'expétiteur
+une adresse de 17 bits pour l'adresse du testinateur
+une variable de 3 pour le CR
+puis une variable de 4 pour la Longueur
+LES DONNEES ensuite sont variables, elles dépendent de la longueur obtenue précédemment.
+Enfin, les 8 bits de sécurité.
+
+SOIT POUR EXEMPLE.................
+
+dans l'autre fichier
+
+WARN --> https://www.cplusplus.com/reference/string/to_string/
+
++----------------------------------+--------------------------+
+
+Trame "compressée" à tester:: BC120A3303--E1--00810BCC
+
+avec: 10111100 qui correspond au binaire de BC (caractère de contrôle)
+(10)-useless // (1) [possible avec le 0 - répétition ou adresse normale] // (1) // Priorité (
+
+    0 - Repetition
+    1 - Normal
+
+    00 - SYSTEM
+    10 - ALARM
+    01 - HIGH
+    11 - Low ((switch case utile))
+
++----
+Les 4 caractères suivants sont l'adresse physique de l'EXPEDITEUR
+Puis, les 4 autres sont l'adresse du DESTINATAIRE
+
+genre là on a 10-0B et 10-03
+
+-//------
+
+le e1 correspond à plein de choses:
+en binaire ça donne 1 110 0001
+
+1: c'est une adresse de groupe
+110 == 6 = compteur de routage (comme un TTL)
+0001 = longieur de la donnée (ici 2 octets)
+
+<<--------
+
+//E1 et 0081 les données (on verra ça plus tard)
+
+!----!
+
+0B: parité (on s'en fout)
+
+CC: acquittement (sera à faire plus tard)
+
+
+---------------------
+
+6 AVRIL
+
+demain a 12h
+10H
+17H
+/------//////////////////
