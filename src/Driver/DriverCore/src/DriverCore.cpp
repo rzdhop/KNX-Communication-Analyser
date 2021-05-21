@@ -8,7 +8,7 @@
 * 	- Methods od SerialPort
 *
 * This DLL has been developped by VERDU Rida (20yo) for a final
-* project of the 2nd year BTECH HND at Dirderot High School
+* project of the 2nd year BTECH HND at Diderot High School
 * during the year 2021 
 */
 
@@ -22,40 +22,45 @@
 #include <windows.h>
 #include <string>
 
+//Declare l'exportation de CreateSerialPort en symbol pour sa future Implementation
 extern "C" __declspec(dllexport) SerialPort * __cdecl CreateSerialPort()
 {
 	return new SerialPort();
 }
 
+//Constructeur de la class SerialPort
 SerialPort::SerialPort()
 {
 	this->_errors = 0;
 	this->_status = { 0 };
 	this->_connState = FALSE;
 
-	//debug cond
+	//Fonction permettat de selectionner le port connecté au module
 	this->_autoSelectPort(this->_SerialList());
 
-	std::cout << "[*] Port name: " << this->_portName << std::endl;
-
-	//Init I/O stream windows handler
+	//Initialisation des flux I/O de windows pour la lecture les donnée reçus de la carte
 	this->_streamHandle = CreateFileA(this->_portName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (this->_streamHandle == INVALID_HANDLE_VALUE) {
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+			//***********************ERROR************************
 			std::cout << "[-] ERROR: Handle was not attached. Reason: " << this->_portName << " not available\n";
 		}
-		else { std::printf("[-] Undefined Error ! %d \n", GetLastError()); return; }
+		else {
+			//***********************ERROR************************
+			std::printf("[-] Undefined Error ! %d \n", GetLastError());
+			return; }
 	}
 
-	//Declare pointer to LPDCB struct (serialCOM parameters)
+	//Declare le pointer vers LPDCB struct (parametre du Serial COM)
 	DCB dcbSerialParameters = { 0 };
 
 	if (!GetCommState(this->_streamHandle, &dcbSerialParameters)) {
+		//***********************ERROR************************
 		std::cout << "[-] Failed to retreive current serial parameter ! \n";
 		return;
 	}
 	else {
-		//Define dcbSerialParameters struct's parameter
+		//Defini les parametre de la structure dcbSerialParameters
 		dcbSerialParameters.BaudRate = CBR_9600;
 		dcbSerialParameters.ByteSize = 8;
 		dcbSerialParameters.StopBits = ONESTOPBIT;
@@ -63,18 +68,20 @@ SerialPort::SerialPort()
 		dcbSerialParameters.fDtrControl = DTR_CONTROL_ENABLE;
 
 		if (!SetCommState(this->_streamHandle, &dcbSerialParameters)) {
-			std::cout << "[-] ERROR: could not set Serial port parameters" << GetLastError() << std::endl;
+			//***********************ERROR************************
+			std::cout << "[-] ERREUR: Impossible d'appliqué les parametre de communication au Serial COM" << GetLastError() << std::endl;
 			return;
 		}
 		else {
 			this->_connState = true;
 
-			//Clean the buffers of this->_portName
+			//Vide le buffers du flux de communication serial 
 			PurgeComm(this->_streamHandle, PURGE_RXCLEAR | PURGE_TXCLEAR); //flag : input clean | output Clean
 		}
 	}
 }
 
+//Destructeur fermant la connection et le flux de communication
 SerialPort::~SerialPort()
 {
 	if (this->_connState)
@@ -83,25 +90,30 @@ SerialPort::~SerialPort()
 		this->_CloseConn();
 	}
 }
+//Methode effectuant la fermeture de la communication serial
 void SerialPort::_CloseConn()
 {
-	std::cout << "[+] closing port";
+	std::cout << "[+] Fermeture des ports";
 	if (!this->_connState) CloseHandle(this->_streamHandle);
-	else std::cout << "[-] There is no connection to Terminate \n";
+	else {
+		//***********************ERROR************************v
+		std::cout << "[-] Aucune communication a terminé \n";
+	}
 	return;
 }
+//lit et stock les données reçus du serial dans le buffer en parametre
 int SerialPort::readSerialPort(char* buffer, unsigned int buf_size)
 {
 	DWORD bytesRead;
 	DWORD toRead = 0;
 
-	//Clear error flag (to avoid I/O blocking due to error)
+	//Clear error flag (Pour eviter erreur de lecture)
 	ClearCommError(this->_streamHandle, &this->_errors, &this->_status);
 
-	if (this->_status.cbInQue > 0) { //check the number of bytes received but not read by ReadFile
+	if (this->_status.cbInQue > 0) { //Verifie le nombre de bytes reçus mais non-lu 
 		if (this->_status.cbInQue > buf_size) {
 			toRead = buf_size;
-			//Read Bytes from serial
+			//Lit et stock les bytes non-lu
 			if (ReadFile(this->_streamHandle, buffer, toRead, &bytesRead, NULL)) return bytesRead;
 		}
 		else toRead = this->_status.cbInQue;
@@ -123,14 +135,14 @@ void SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 
 	for (size_t i(0); i < numberOfSerial; i++)
 	{
+		//Interoge le kernel sur le friendly name des ports serial connecter au system
 		QueryDosDeviceA(serialList.back().c_str(), bufferPathFriendlyName, 5000);
 
 		physicalDeviceObjectName = bufferPathFriendlyName;
 		lastPos = physicalDeviceObjectName.find_last_of(R"(\)");
 		physicalDeviceObjectName = physicalDeviceObjectName.substr(lastPos + 1);
-
-		std::cout <<"[+] Friendly Name : |"  << physicalDeviceObjectName << "| --- Full Path : " << bufferPathFriendlyName << std::endl;
 		
+		//verifie qu'il s'agit bien du port COM attendu
 		if (!strcmp(physicalDeviceObjectName.c_str(), "ProlificSerial0") || !strcmp(physicalDeviceObjectName.c_str(), "VCP0") || !strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))
 		{
 			this->_portName = serialList[i];
@@ -140,6 +152,7 @@ void SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 	}
 	return;
 }
+//Liste tout les ports COM connecté au system
 std::vector<std::string> SerialPort::_SerialList()
 {
 	std::vector<std::string> serialList;
@@ -147,7 +160,7 @@ std::vector<std::string> SerialPort::_SerialList()
 	char bufferTragetPath[5000];
 	std::size_t path_size(0);
 
-	//test each COM name to get the one used by the system and get his description name
+	//Teste chacun des COM possible et recupère sa description
 	for (int i(0); i < 255; i++)
 	{
 		queryName = COMName + std::to_string(i);
