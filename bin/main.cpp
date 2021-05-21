@@ -8,7 +8,7 @@
 #include <sstream>
 #include "logs.hpp"
 
-int main(int, char* argv[])
+int main(int,char* argv[])
 {
     argh::parser cmdl(argv);
 
@@ -40,7 +40,7 @@ int main(int, char* argv[])
         std::cin >> specificPortConfirmation;
 
         if (specificPortConfirmation == 'Y')
-	    {
+        {
             std::cout << "THE FOLLOWING COM PORTS ARE BEEN FOUND:" << std::endl;
             //Call of the driverapp.exe created by rdzop
             std::cout << "If you don't see the port you want to use, or see no ports, click on the Cortana bar, then 'Device Manager', and then, click on 'COM Ports' to see if your serial ports are been detected by your computer." << std::endl;
@@ -64,10 +64,10 @@ int main(int, char* argv[])
         std::cout << "Manual frame mode. Please write your frame here and press ENTER : " << std::endl;
         std::cin >> vbAdress;
         std::cout << std::endl << std::endl;
-        
+
     }
 
-    if (!cmdl[{ "-f", "--frame", "-p", "--manualport", "-h", "--help", "-ad", "--autodetect"  }]) 
+    if (!cmdl[{ "-f", "--frame", "-p", "--manualport", "-h", "--help", "-ad", "--autodetect"  }])
         {
             std::cout << std::endl << "WARN: Sorry, you dosen't specified one argument, or the argument you entered is incorrect." << std::endl;
             std::cout << "      Please try again. If you need help please specify the argument '-h' or '--help'" << std::endl;
@@ -75,8 +75,8 @@ int main(int, char* argv[])
             return EXIT_SUCCESS;
         }
 
-    
-    
+
+
     Decode adresse1;
     Logs adresse2;
     std::ostringstream writeToLogs;
@@ -111,7 +111,7 @@ int main(int, char* argv[])
 
     std::cout << " and the priority of emission was " << tempPriorityFrame << std::endl;
     writeToLogs << " and the priority of emission was " << tempPriorityFrame << std::endl;
-    
+
     std::string tempSourceAdress = adresse1.sourceAdress();
     std::cout << "The source adress is : " << tempSourceAdress << std::endl;
     writeToLogs << "The source adress is : " << tempSourceAdress << std::endl;
@@ -176,4 +176,3 @@ int main(int, char* argv[])
 
     return EXIT_SUCCESS;
 }
-

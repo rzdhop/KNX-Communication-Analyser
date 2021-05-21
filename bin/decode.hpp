@@ -81,6 +81,7 @@ public:
             {
                 return false;
             }
+            return false;
 
         }
 
@@ -98,6 +99,7 @@ public:
             case 10 : return "ALARM";
             case 01 : return "HIGH";
             case 11 : return "LOW";
+            default: return "false";
         }
     }
 
@@ -140,7 +142,7 @@ public:
         {
             return 1;
         }
-
+        return false;
     }
 
     unsigned int TTL()
@@ -179,9 +181,11 @@ public:
 
         std::string s = "0xA";
 
-        unsigned n;
+        unsigned int n(0);
         std::bitset<32> b(n);
         std::cout << b.to_string() << std::endl;
+
+        return false;
 
     }
 
@@ -204,7 +208,9 @@ public:
             {
                 return 2;
             }
+    return false;
     }
+
 
 };
 
