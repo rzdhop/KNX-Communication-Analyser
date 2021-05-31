@@ -14,6 +14,7 @@ public:
 
     std::string receivedKNXFrame;
     std::string receivedKNXFrameBinary;
+    std::string receivedKNXFrameBinaryHeader;
     unsigned int lengthOfData;
 
     //Méthodes:
@@ -30,6 +31,8 @@ public:
 
         temp1 = hex_to_dec(char_arr);
         temp0 = ch_to_binary(temp1);
+
+        Decode::receivedKNXFrameBinaryHeader = temp0;
     
         return temp0;
     }
@@ -45,22 +48,22 @@ public:
 
     std::string dataKNXNetworks()
     {
-        std::string temp0;
-        int temp1;
+        std::string temp2;
+        int temp3;
 
-        temp0 = receivedKNXFrame.substr(10, 2);
+        temp2 = receivedKNXFrame.substr(10, 2);
 
         char* char_arr;
-        std::string str_obj(temp0);
+        std::string str_obj(temp2);
         char_arr = &str_obj[0]; //Convert string into char.
 
-        temp1 = hex_to_dec(char_arr);
-        temp0 = ch_to_binary(temp1);
+        temp3 = hex_to_dec(char_arr);
+        temp2 = ch_to_binary(temp3);
         //temp1 = stoi(temp0);
 
-        Decode::receivedKNXFrameBinary = temp0;
+        Decode::receivedKNXFrameBinary = temp2;
 
-        return temp0;
+        return temp2;
 
     }
 
@@ -70,7 +73,7 @@ public:
 
             std::string temp_priority;
 
-            temp_priority = receivedKNXFrameBinary.substr(2, 1);
+            temp_priority = receivedKNXFrameBinaryHeader.substr(2, 1);
 
             if (temp_priority == "0")
             {
@@ -88,7 +91,7 @@ public:
     {
         std::string temp_priority;
 
-        temp_priority = receivedKNXFrameBinary.substr(4, 2);
+        temp_priority = receivedKNXFrameBinaryHeader.substr(4, 2);
 
         unsigned int temp_priorityDEC = std::stoi (temp_priority);
 
@@ -204,8 +207,11 @@ public:
             {
                 return 2;
             }
+
+            else
+            {
+                return 99;
+            }
     }
 
 };
-
-

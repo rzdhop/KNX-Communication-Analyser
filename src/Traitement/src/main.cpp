@@ -15,7 +15,7 @@ int main(int,char* argv[])
         if (cmdl[{ "-ad", "--autodetect" }])
     {
         std::cout << "Welcome to KNX Communications Analyser. Autodetecting COM ports.. It can takes about 1 minute.\n";
-        std::cout << "The following COM ports are been found : " << "COM4 *testing purposes only*" << std::endl;
+        std::cout << "The following COM ports are been found : " << "COM4" << std::endl;
         std::cout << std::endl;
         //Call of the driverapp.exe created by rdzhop AND select the 1st port (unsure)
 
@@ -84,13 +84,11 @@ int main(int,char* argv[])
     adresse1.receivedKNXFrame = vbAdress;
 
     std::cout << "The used frame is : " << adresse1.receivedKNXFrame << std::endl;
-
+    writeToLogs << "The used frame is : " << adresse1.receivedKNXFrame << std::endl;
 
     std::string tempHeader = adresse1.decode_hed();
-
-    std::string binDataKNXNetworks = adresse1.dataKNXNetworks();
-    std::cout << "The binary of the network KNX is : " << binDataKNXNetworks << std::endl;
-    writeToLogs << "The binary of the network KNX is : " << binDataKNXNetworks << std::endl;
+    std::cout << "The header of this KNX frame is : " << tempHeader << std::endl;
+    writeToLogs<< "The header of this KNX frame is : " << tempHeader << std::endl;
 
 
     bool typeFrame = adresse1.calcpriority();
@@ -112,6 +110,8 @@ int main(int,char* argv[])
     std::cout << " and the priority of emission was " << tempPriorityFrame << std::endl;
     writeToLogs << " and the priority of emission was " << tempPriorityFrame << std::endl;
 
+
+
     std::string tempSourceAdress = adresse1.sourceAdress();
     std::cout << "The source adress is : " << tempSourceAdress << std::endl;
     writeToLogs << "The source adress is : " << tempSourceAdress << std::endl;
@@ -120,6 +120,10 @@ int main(int,char* argv[])
     std::cout << "The destination adress is : " << tempDestinationAdress << std::endl; //jusqu'à là ok, ne pas toucher
     writeToLogs << "The destination adress is : " << tempDestinationAdress << std::endl;
 
+std::string binDataKNXNetworks = adresse1.dataKNXNetworks();
+    std::cout << "The binary of the network KNX is : " << binDataKNXNetworks << std::endl;
+    writeToLogs << "The binary of the network KNX is : " << binDataKNXNetworks << std::endl;
+   
     unsigned int tempLongFrame = adresse1.longFrame();
     std::cout << "The length of the frame is : " << tempLongFrame << std::endl;
     writeToLogs << "The length of the frame is : " << tempLongFrame << std::endl;
@@ -166,6 +170,8 @@ int main(int,char* argv[])
                  std::cout << "This frame was sent, and the reception was correct." << std::endl;
                  writeToLogs << "This frame was sent, and the reception was correct." << std::endl;
             }
+
+        else {std::cout <<"WARN: UNDEFINED ERROR!" << std::endl;}
 
     std::cout << std::endl;
     std::cout << "Writing logs...";
