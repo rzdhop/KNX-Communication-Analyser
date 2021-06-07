@@ -17,7 +17,7 @@
 #define MAX_KEY_LENGTH 255
 #define MAX_VALUE_NAME 16383
 
-#include "../../Traitement/src/logs.hpp"
+#include "..\..\..\Traitement\src\logs.hpp"
 #include "DriverCore.h"
 #include <iostream>
 #include <windows.h>
@@ -44,20 +44,28 @@ SerialPort::SerialPort()
 	if (this->_streamHandle == INVALID_HANDLE_VALUE) {
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
 			//***********************ERROR************************
-			std::cout << "[-] ERROR: Handle was not attached. Reason: " << this->_portName << " not available\n";
+			this->writeLogsStream << "[-] ERROR: Handle was not attached. Reason: " << this->_portName << " not available\n";
+			this->log.tempStr = writeLogsStream.str();
+			this->log.writingLogs();
+			return; 
 		}
 		else {
 			//***********************ERROR************************
-			std::printf("[-] Undefined Error ! %d \n", GetLastError());
+			std::cout << "aaaa";
+			this->writeLogsStream << "[-] Undefined Error ! "<<  GetLastError() << " \n";
+			this->log.tempStr = writeLogsStream.str();
+			this->log.writingLogs();
 			return; }
 	}
-
+	
 	//Declare le pointer vers LPDCB struct (parametre du Serial COM)
 	DCB dcbSerialParameters = { 0 };
 
 	if (!GetCommState(this->_streamHandle, &dcbSerialParameters)) {
 		//***********************ERROR************************
-		std::cout << "[-] Failed to retreive current serial parameter ! \n";
+		this->writeLogsStream << "[-] Failed to retreive current serial parameter ! \n";
+		this->log.tempStr = writeLogsStream.str();
+		this->log.writingLogs();
 		return;
 	}
 	else {
@@ -70,7 +78,9 @@ SerialPort::SerialPort()
 
 		if (!SetCommState(this->_streamHandle, &dcbSerialParameters)) {
 			//***********************ERROR************************
-			std::cout << "[-] ERREUR: Impossible d'appliqué les parametre de communication au Serial COM" << GetLastError() << std::endl;
+			this->writeLogsStream << "[-] ERREUR: Impossible d'appliqué les parametre de communication au Serial COM" << GetLastError() << std::endl;
+			this->log.tempStr = writeLogsStream.str();
+			this->log.writingLogs();
 			return;
 		}
 		else {
@@ -94,12 +104,14 @@ SerialPort::~SerialPort()
 //Methode effectuant la fermeture de la communication serial
 void SerialPort::_CloseConn()
 {
-	std::cout << "[+] Fermeture des ports";
+	this->writeLogsStream << "[+] Fermeture des ports";
 	if (!this->_connState) CloseHandle(this->_streamHandle);
 	else {
 		//***********************ERROR************************
-		std::cout << "[-] Aucune communication a terminé \n";
+		this->writeLogsStream << "[-] Aucune communication a terminé \n";
 	}
+	this->log.tempStr = writeLogsStream.str();
+	this->log.writingLogs();
 	return;
 }
 //lit et stock les données reçus du serial dans le buffer en parametre

@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include "..\..\..\Traitement\src\logs.hpp"
 
 //Definition de la class SerialPort contenant mes fonction pour gérer la communication avec le modudule
 class SerialPort
@@ -20,6 +21,8 @@ private:
 	std::string _portName;
 	COMSTAT _status;
 	DWORD _errors;
+	Logs log;
+	std::ostringstream writeLogsStream;
 public:
 	SerialPort();
 	~SerialPort();
@@ -74,5 +77,5 @@ std::string readSerialBuffer(SerialPort* LPCSerialPort, const std::size_t buffer
 		return strBuffer;
 	}
 	delete[] Buffer;
-	return "";
+	return ""; //si il n'y as rien alors rien n'est retourner (string de length 0)
 }
