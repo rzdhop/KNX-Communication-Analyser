@@ -17,6 +17,7 @@
 #define MAX_KEY_LENGTH 255
 #define MAX_VALUE_NAME 16383
 
+#include "../../Traitement/src/logs.hpp"
 #include "DriverCore.h"
 #include <iostream>
 #include <windows.h>
@@ -96,7 +97,7 @@ void SerialPort::_CloseConn()
 	std::cout << "[+] Fermeture des ports";
 	if (!this->_connState) CloseHandle(this->_streamHandle);
 	else {
-		//***********************ERROR************************v
+		//***********************ERROR************************
 		std::cout << "[-] Aucune communication a terminé \n";
 	}
 	return;
@@ -143,8 +144,7 @@ void SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 		physicalDeviceObjectName = physicalDeviceObjectName.substr(lastPos + 1);
 		
 		//verifie qu'il s'agit bien du port COM attendu
-		if (!strcmp(physicalDeviceObjectName.c_str(), "ProlificSerial0") || !strcmp(physicalDeviceObjectName.c_str(), "VCP0") || !strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))
-		{
+		if (!strcmp(physicalDeviceObjectName.c_str(), "ProlificSerial0") || !strcmp(physicalDeviceObjectName.c_str(), "VCP0") || !strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))		{
 			this->_portName = serialList[i];
 			return;
 		}
@@ -164,7 +164,7 @@ std::vector<std::string> SerialPort::_SerialList()
 	for (int i(0); i < 255; i++)
 	{
 		queryName = COMName + std::to_string(i);
-		//Query the path of the COMName
+		//Query le chemin d'acces du port COM
 		path_size = QueryDosDeviceA(queryName.c_str(), bufferTragetPath, 5000);
 		if (path_size != 0) {
 			serialList.push_back(queryName);
