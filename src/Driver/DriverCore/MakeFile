@@ -1,0 +1,14 @@
+#Build DLL in DriverApp/bin/$(IntDir)
+SRC  = src\DriverCore.cpp
+OUT  = bin\DriverCore.dll
+
+all: DLL_x86
+
+DLL_x64: $(SRC)
+	@echo Compiling DLL from $(SRC) 
+	cl.exe /w $(SRC) /EHsc /link /DLL /MACHINE:X64 /SUBSYSTEM:WINDOWS /OUT:$(OUT)
+	@echo DLL compiled into $(OUT)
+DLL_x86: $(SRC)
+	@echo Compiling DLL from $(SRC) 
+	cl.exe /w $(SRC) /EHsc /link /DLL /MACHINE:X86 /SUBSYSTEM:WINDOWS /OUT:$(OUT)
+	@echo DLL compiled into $(OUT)
