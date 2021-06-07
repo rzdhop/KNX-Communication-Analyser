@@ -1,0 +1,17 @@
+KNX Communication Analyzer -- Tue Jun 01 00:06:41 2021
+
+The used frame is : BC120A3303E100810BCC
+The header of this KNX frame is : 10111100
+This frame is a NORMAL frame and the priority of emission was LOW
+The source adress is : 120A
+The destination adress is : 3303
+The binary of the network KNX is : 11100001
+The length of the frame is : 2
+This frame is part of a group
+The TTL is :6
+The datas extracted from the frame are : 0081
+Finally, the parity byte are : 81
+This frame was sent, and the reception was correct.
+
+-------------END-
+

@@ -23,8 +23,9 @@ int hex_to_dec(char num[]) {
 
 std::string ch_to_binary(int received_number)
 {
+   //std::cout<<"ENTREE"<<std::endl;
     std::string binary = std::bitset<8>(received_number).to_string(); //convertit la chaîne de caractères en binaire
-    //std::cout<<binary<<"\n"; for testing purposes only!!!!!
+    //std::cout<<"uuduhdeuheuh"<<binary<<"\n"; //for testing purposes only!!!!!
 
     //unsigned long decimal = std::bitset<8>(binary).to_ulong();
     //std::cout<<decimal<<"\n";
