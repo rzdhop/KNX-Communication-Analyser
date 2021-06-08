@@ -10,7 +10,7 @@ int main()
 {
 	std::cout << std::endl << "[+] Initialising Serial Port" << std::endl;
 
-	SerialPort* CSerialPort = _InitSerialPort();
+	SerialPort* CSerialPort = _InitSerialPort(R"(..\..\DriverCore\bin\DriverCore.dll)");
 
 	if (CSerialPort == nullptr) std::cout << std::endl << "[-] Errorno :" << GetLastError() << std::endl;
 
