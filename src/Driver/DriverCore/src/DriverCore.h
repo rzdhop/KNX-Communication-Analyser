@@ -31,10 +31,10 @@ public:
 };
 
 //Fonction d'Initialisation de la class SeriaPort dans le DLL
-SerialPort* _InitSerialPort()
+SerialPort* _InitSerialPort(std::string dll_Path)
 {
 	//Charge le DLL dans l'espace d'adresse du processus client
-	HMODULE hDLL = LoadLibraryExW(LR"(..\..\DriverCore\bin\DriverCore.dll)", nullptr, 0);
+	HMODULE hDLL = LoadLibraryExA((LPCSTR)dll_Path.c_str(), nullptr, 0);
 	if (!hDLL) {
 		return nullptr;
 	}
