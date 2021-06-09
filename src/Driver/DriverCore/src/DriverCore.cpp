@@ -51,7 +51,6 @@ SerialPort::SerialPort()
 		}
 		else {
 			//***********************ERROR************************
-			std::cout << "aaaa";
 			this->writeLogsStream << "[-] Undefined Error ! "<<  GetLastError() << " \n";
 			this->log.tempStr = writeLogsStream.str();
 			this->log.writingLogs();
@@ -158,6 +157,7 @@ void SerialPort::_autoSelectPort(std::vector<std::string> serialList)
 		//verifie qu'il s'agit bien du port COM attendu
 		if (!strcmp(physicalDeviceObjectName.c_str(), "ProlificSerial0") || !strcmp(physicalDeviceObjectName.c_str(), "VCP0") || !strcmp(physicalDeviceObjectName.c_str(), "USBSER000"))		{
 			this->_portName = serialList[i];
+			std::cout << "Port :" << serialList[i] << "\n" ; 
 			return;
 		}
 		serialList.pop_back();
