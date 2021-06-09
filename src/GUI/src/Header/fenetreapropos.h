@@ -14,7 +14,10 @@ public:
     ~fenetreApropos();
 private:
     QLabel *logo;
-    QLabel *information;
+    QTextEdit *information;
+    QTextEdit *auteur;
+    QTextEdit *git;
+    QTextEdit *doc;
     QLabel *noms;
     QLabel *qrCode;
 };

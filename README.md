@@ -1,3 +1,5 @@
+![KNX-CA Windows Logo](https://raw.githubusercontent.com/rzdhop/KNX-Communication-Analyser/gh-pages/assets/logo.png)
+
 # KNX-Communication-Analyser
 
 > By KNX Workers Inc (this is a student project)
@@ -47,41 +49,4 @@ This awesome program was written by [IchInose_0x3b](https://github.com/rzdhop "I
 
 MIT license.
 
-# Using the software
 
-## With the graphical software
-
-The first method is to use the graphical software, the easiest to use, of which an executable version is available on GitHub, in the Releases section.
-
-Start the software. It is likely that you will have to open it with administrator rights in order to be able to detect the different COM ports.
-![KNX-CA Windows Logo](https://raw.githubusercontent.com/rzdhop/KNX-Communication-Analyser/gh-pages/assets/KNXCA_desktop.jpg)
-
-After starting the software, press ▶️ to start reading the frames.
-
-![KNX-CA Windows Logo](https://raw.githubusercontent.com/rzdhop/KNX-Communication-Analyser/gh-pages/assets/Inkedscreen_qt_withoutdetails_LI.jpg)
-
-As the frames are displayed, you can see the details of the frame by clicking on the ➕ icon.
-
-![KNX-CA Windows Logo](https://raw.githubusercontent.com/rzdhop/KNX-Communication-Analyser/gh-pages/assets/Inkedscreen_qt_LI.jpg)
-
-## With the command line software
-
-The command line version is more complicated to use, but more complete.
-
-Executed without any arguments, it will not return anything. Here is the list of the different arguments available.
-
-|-h|-help|Displays the quick help and a link to the online documentation.
-|-Automatically detects the COM port and listens for KNX frames.
-|-Asks the user to specify the COM port he wants to use for the frame analyser.
-|-This allows the user to have the information of a hexadecimal frame already in the user's possession.
-
-One of the most interesting features is the decoping of an existing frame, as seen before. Run it according to this scheme: ```.\<program name> -f```
-
-A GIF shows you the execution of this option below.
-
-![Utilisation avec une trame déjà existante](https://raw.githubusercontent.com/rzdhop/KNX-Communication-Analyser/gh-pages/assets/knx-manualframe.gif)
-
-## Log file
-
-After each run of the software, a log file is generated in the folder containing the software.
-Please note. This file is not purged at each execution to avoid the loss of important data. You must therefore delete it or delete its contents if you wish to have a new file.
