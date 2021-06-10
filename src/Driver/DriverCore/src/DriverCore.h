@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <ctime>
 #include "..\..\..\Traitement\src\logs.hpp"
 
 //Definition de la class SerialPort contenant mes fonction pour gérer la communication avec le modudule
@@ -52,30 +53,44 @@ SerialPort* _InitSerialPort(std::string dll_Path)
 }
 
 //Api de la class SerialPort pour facilité sont utilisation
-std::string readSerialBuffer(SerialPort* LPCSerialPort, const std::size_t buffer_size)
+void readSerialBuffer(SerialPort* LPCSerialPort, std::string &containerFrame, const std::size_t buffer_size = 1)
 {
 	char* Buffer = new char[buffer_size];
 	std::string strBuffer;
-	if (LPCSerialPort->readSerialPort(Buffer, buffer_size)) 
+	std::size_t strBufferSize =0;
+	bool flag = 0;
+	std::clock_t begin;
+	while (1)
 	{
-		strBuffer = Buffer;
-		std::string strFlagBuffer = Buffer;
-		strFlagBuffer = strFlagBuffer.substr(0, buffer_size);
-		strBuffer = strBuffer.substr(0, buffer_size);
-		auto strBufferSize = strBuffer.size();
-		strBuffer = "";
-		std::stringstream strhexBufffer;
-
-		for (int i(0); i < strBufferSize; i++)
-		{
-			strhexBufffer << std::hex << abs(int(strFlagBuffer[i]));
-			strBuffer += strhexBufffer.str();
+		if (LPCSerialPort->readSerialPort(Buffer, buffer_size) > 0)
+		{	
+			if (!flag){
+				begin = clock();
+				flag = 1;
+			}
+			strBuffer = Buffer;
+			std::string strFlagBuffer = Buffer;
+			strFlagBuffer = strFlagBuffer.substr(0, buffer_size);
+			strBuffer = strBuffer.substr(0, buffer_size);
+			strBufferSize = strBuffer.size();
+			strBuffer = "";
+			std::stringstream strhexBufffer;
+			for (int i(0); i < strBufferSize; i++)
+			{
+				strhexBufffer << std::hex << int(strFlagBuffer[i]);
+				if (strhexBufffer.str().size() >= 8){
+					containerFrame += strhexBufffer.str().substr(6, strhexBufffer.str().size());
+					continue;
+				}
+				containerFrame += strhexBufffer.str();
+			}
+			std::cout << containerFrame << ".\n";
 			strhexBufffer.str(std::string());
 		}
-		std::cout << strBuffer;
-		delete[] Buffer;
-		return strBuffer;
+	if (clock() - begin >= 100 && !strBufferSize) break;
 	}
 	delete[] Buffer;
-	return ""; //si il n'y as rien alors rien n'est retourner (string de length 0)
 }
+//bc11c96d6fe10081f99c11c96d6fe10081d99c11c96d6fe10081d99c11c96d6fe10081d9
+//bc11c96d6fe180f89c11c96d6fe180d89c11c96d6fe180d89c11c96d6fe180
+//bc11c96d6fe181f99c11c96d6fe181d99c11c96d6fe181d99c11c96d6fe181d9bc11c96d6be3

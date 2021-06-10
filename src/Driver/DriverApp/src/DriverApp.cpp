@@ -15,7 +15,9 @@ int main()
 	if (CSerialPort == nullptr) std::cout << std::endl << "[-] Errorno :" << GetLastError() << std::endl;
 
 	std::cout << "[+] Reading COM port :" << std::endl;
-	while(1) std::cout << readSerialBuffer(CSerialPort, 1);
+	std::string containerFrame = "";
+	readSerialBuffer(CSerialPort, containerFrame);
+	std::cout << "\n ooooO:" << containerFrame << "\n";
 
 	return 0;
 }

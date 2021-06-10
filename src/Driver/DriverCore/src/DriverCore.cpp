@@ -126,11 +126,12 @@ int SerialPort::readSerialPort(char* buffer, unsigned int buf_size)
 		if (this->_status.cbInQue > buf_size) {
 			toRead = buf_size;
 			//Lit et stock les bytes non-lu
-			if (ReadFile(this->_streamHandle, buffer, toRead, &bytesRead, NULL)) return bytesRead;
+			if (ReadFile(this->_streamHandle, buffer, toRead, &bytesRead, NULL) != 0){
+				return bytesRead;
+			}
 		}
 		else toRead = this->_status.cbInQue;
 	}
-
 	return 0;
 }
 bool SerialPort::isConnected()
