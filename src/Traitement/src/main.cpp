@@ -1,3 +1,5 @@
+#define WIN32_LEAN_AND_MEAN
+
 #include <iostream>
 #include "argh.h"
 #include "convertmethods.hpp"
@@ -7,6 +9,9 @@
 #include <cstring>
 #include <sstream>
 #include "logs.hpp"
+#include <Windows.h>
+#include <vector>
+#include "..\..\Driver\DriverCore\src\DriverCore.h"
 
 int main(int,char* argv[])
 {
@@ -18,7 +23,15 @@ int main(int,char* argv[])
         std::cout << "The following COM ports are been found : " << "COM4" << std::endl;
         std::cout << std::endl;
         //Call of the driverapp.exe created by rdzhop AND select the 1st port (unsure)
+            	std::cout << std::endl << "[+] Initialising Serial Port" << std::endl;
 
+	            SerialPort* CSerialPort = _InitSerialPort(R"(..\..\Driver\DriverCore\bin\DriverCore.dll)");
+
+	                if (CSerialPort == nullptr) std::cout << std::endl << "[-] Errorno :" << GetLastError() << std::endl;
+
+	        std::cout << "[+] Reading COM port :" << std::endl;
+	        while(1) std::cout << readSerialBuffer(CSerialPort, 1);
+            //ET ON METS SUR vbAdress UNE FOIS QUE 
         //here comes the link to the function who cut the frames
     }
 
@@ -87,8 +100,8 @@ int main(int,char* argv[])
     writeToLogs << "The used frame is : " << adresse1.receivedKNXFrame << std::endl;
 
     std::string tempHeader = adresse1.decode_hed();
-    std::cout << "The header of this KNX frame is : " << tempHeader << std::endl;
-    writeToLogs<< "The header of this KNX frame is : " << tempHeader << std::endl;
+    std::cout << "The header of this KNX frame is (control byte): " << tempHeader << std::endl;
+    writeToLogs<< "The header of this KNX frame is (control byte): " << tempHeader << std::endl;
 
 
     bool typeFrame = adresse1.calcpriority();
@@ -120,7 +133,7 @@ int main(int,char* argv[])
     std::cout << "The destination adress is : " << tempDestinationAdress << std::endl; //jusqu'à là ok, ne pas toucher
     writeToLogs << "The destination adress is : " << tempDestinationAdress << std::endl;
 
-std::string binDataKNXNetworks = adresse1.dataKNXNetworks();
+    std::string binDataKNXNetworks = adresse1.dataKNXNetworks();
     std::cout << "The binary of the network KNX is : " << binDataKNXNetworks << std::endl;
     writeToLogs << "The binary of the network KNX is : " << binDataKNXNetworks << std::endl;
    

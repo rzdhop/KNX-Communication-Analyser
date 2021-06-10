@@ -15,7 +15,9 @@ class Logs
     void writingLogs()
     {
         std::string const filename("logs.txt");
-        std::ofstream writeLogs(filename.c_str());
+        //std::ofstream writeLogs(filename.c_str());
+        std::ofstream writeLogs;
+        writeLogs.open( "logs.txt", std::ofstream::out | std::ofstream::app );
 
         if(writeLogs)    
             {
@@ -26,8 +28,12 @@ class Logs
                 writeLogs << tempStr;
 
                 writeLogs << std::endl << "-------------END-" << std::endl << std::endl;
-                std::cout << "OK" << std::endl;
+                writeLogs.close();
+
+                std::ofstream writeLogs( "data.txt", std::ofstream::out | std::ofstream::app );
+
             }
+        
         else
             {
                 std::cout << std::endl << "WARNING! Error: unable to create or open logs.txt" << std::endl;
