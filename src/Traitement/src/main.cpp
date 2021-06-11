@@ -33,10 +33,7 @@ int main(int,char* argv[])
 	        if (CSerialPort == nullptr) std::cout << std::endl << "[-] Errorno :" << GetLastError() << std::endl;
 
 	        std::cout << "[+] Reading COM port :" << std::endl;
-
-	        std::string containerFrame = "";
-	        readSerialBuffer(CSerialPort, containerFrame);
-	        std::cout << "\n ooooO 1:" << containerFrame << "\n";
+	        readSerialBuffer(CSerialPort, vbAdress);
             //ET ON METS SUR vbAdress UNE FOIS QUE 
         //here comes the link to the function who cut the frames
     }

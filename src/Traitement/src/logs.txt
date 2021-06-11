@@ -21,3 +21,26 @@ The returned ACK was was something else than 0C, C0 or CC. The returned value wa
 
 -------------END-
 
+KNX Communication Analyzer -- Fri Jun 11 16:13:04 2021
+
+[-] Undefined Error ! 3 
+
+-------------END-
+
+KNX Communication Analyzer -- Fri Jun 11 16:15:16 2021
+
+The used frame is : BC11C96D6FE10080F89C11C96D6FE10080D89C11C96D6FE10080D89C11C96D6FE10080D8
+The header of this KNX frame is (control byte): 10111100
+This frame is a NORMAL frame and the priority of emission was LOW
+The source adress is : 11C9
+The destination adress is : 6D6F
+The binary of the network KNX is : 11100001
+The length of the frame is : 2
+This frame is part of a group
+The TTL is :6
+The datas extracted from the frame are : 0080
+Finally, the parity byte are : 80
+The returned ACK was was something else than 0C, C0 or CC, but without giving an error. 
+
+-------------END-
+
