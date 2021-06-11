@@ -88,7 +88,7 @@ void readSerialBuffer(SerialPort* LPCSerialPort, std::string &containerFrame, co
 			}
 			strhexBufffer.str(std::string());
 		}
-		if (clock() - begin >= 200 && begin != 0 && !LPCSerialPort->_status.cbInQue)
+		if (clock() - begin >= 200 && begin != 0 && (!LPCSerialPort->_status.cbInQue || LPCSerialPort->_status.cbInQue == 20))
 		{
 			for (int i=0; i< containerFrame.size(); i++) containerFrame[i] = toupper(containerFrame[i]);
 			break;
