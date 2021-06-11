@@ -20,11 +20,11 @@ private:
 	HANDLE _streamHandle;
 	bool _connState;
 	std::string _portName;
-	COMSTAT _status;
 	DWORD _errors;
 	Logs log;
 	std::ostringstream writeLogsStream;
 public:
+	COMSTAT _status;
 	SerialPort();
 	~SerialPort();
 	virtual void _CloseConn();
@@ -59,7 +59,7 @@ void readSerialBuffer(SerialPort* LPCSerialPort, std::string &containerFrame, co
 	std::string strBuffer;
 	std::size_t strBufferSize =0;
 	bool flag = 0;
-	std::clock_t begin;
+	std::clock_t begin = 0;
 	while (1)
 	{
 		if (LPCSerialPort->readSerialPort(Buffer, buffer_size) > 0)
@@ -69,6 +69,7 @@ void readSerialBuffer(SerialPort* LPCSerialPort, std::string &containerFrame, co
 				flag = 1;
 			}
 			strBuffer = Buffer;
+			if(strBuffer.size() == 0) strBuffer = "00";
 			std::string strFlagBuffer = Buffer;
 			strFlagBuffer = strFlagBuffer.substr(0, buffer_size);
 			strBuffer = strBuffer.substr(0, buffer_size);
@@ -78,19 +79,21 @@ void readSerialBuffer(SerialPort* LPCSerialPort, std::string &containerFrame, co
 			for (int i(0); i < strBufferSize; i++)
 			{
 				strhexBufffer << std::hex << int(strFlagBuffer[i]);
+				if (strhexBufffer.str() == "0") containerFrame += "0";
 				if (strhexBufffer.str().size() >= 8){
 					containerFrame += strhexBufffer.str().substr(6, strhexBufffer.str().size());
 					continue;
 				}
 				containerFrame += strhexBufffer.str();
 			}
-			std::cout << containerFrame << ".\n";
 			strhexBufffer.str(std::string());
 		}
-	if (clock() - begin >= 100 && !strBufferSize) break;
+		if (clock() - begin >= 200 && begin != 0 && !LPCSerialPort->_status.cbInQue)
+		{
+			for (int i=0; i< containerFrame.size(); i++) containerFrame[i] = toupper(containerFrame[i]);
+			break;
+		}
+			
 	}
 	delete[] Buffer;
 }
-//bc11c96d6fe10081f99c11c96d6fe10081d99c11c96d6fe10081d99c11c96d6fe10081d9
-//bc11c96d6fe180f89c11c96d6fe180d89c11c96d6fe180d89c11c96d6fe180
-//bc11c96d6fe181f99c11c96d6fe181d99c11c96d6fe181d99c11c96d6fe181d9bc11c96d6be3

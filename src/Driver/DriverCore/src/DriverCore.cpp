@@ -21,6 +21,7 @@
 #include "DriverCore.h"
 #include <iostream>
 #include <windows.h>
+#include <sstream>
 #include <string>
 
 //Declare l'exportation de CreateSerialPort en symbol pour sa future Implementation
@@ -121,9 +122,8 @@ int SerialPort::readSerialPort(char* buffer, unsigned int buf_size)
 
 	//Clear error flag (Pour eviter erreur de lecture)
 	ClearCommError(this->_streamHandle, &this->_errors, &this->_status);
-
 	if (this->_status.cbInQue > 0) { //Verifie le nombre de bytes reçus mais non-lu 
-		if (this->_status.cbInQue > buf_size) {
+		if (this->_status.cbInQue >= buf_size) {
 			toRead = buf_size;
 			//Lit et stock les bytes non-lu
 			if (ReadFile(this->_streamHandle, buffer, toRead, &bytesRead, NULL) != 0){
