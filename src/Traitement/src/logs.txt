@@ -1,20 +1,10 @@
-KNX Communication Analyzer -- Wed Jun 09 11:21:46 2021
+KNX Communication Analyzer -- Fri Jun 11 14:13:57 2021
 
-The used frame is : BC11C96D71E10081E79C11C96D71E10081C79C11C96D71E10081C79C11C96D71E10081C7
-The header of this KNX frame is (control byte): 10111100
-This frame is a NORMAL frame and the priority of emission was LOW
-The source adress is : 11C9
-The destination adress is : 6D71
-The binary of the network KNX is : 11100001
-The length of the frame is : 2
-This frame is part of a group
-The TTL is :6
-The datas extracted from the frame are : 0081
-Finally, the parity byte are : 81
+[-] Undefined Error ! 3 
 
 -------------END-
 
-KNX Communication Analyzer -- Wed Jun 09 11:23:24 2021
+KNX Communication Analyzer -- Fri Jun 11 14:15:02 2021
 
 The used frame is : BC11C96D71E10081E79C11C96D71E10081C79C11C96D71E10081C79C11C96D71E10081C7
 The header of this KNX frame is (control byte): 10111100
@@ -27,22 +17,7 @@ This frame is part of a group
 The TTL is :6
 The datas extracted from the frame are : 0081
 Finally, the parity byte are : 81
-
--------------END-
-
-KNX Communication Analyzer -- Wed Jun 09 11:23:27 2021
-
-The used frame is : BC11C96D71E10081E79C11C96D71E10081C79C11C96D71E10081C79C11C96D71E10081C7
-The header of this KNX frame is (control byte): 10111100
-This frame is a NORMAL frame and the priority of emission was LOW
-The source adress is : 11C9
-The destination adress is : 6D71
-The binary of the network KNX is : 11100001
-The length of the frame is : 2
-This frame is part of a group
-The TTL is :6
-The datas extracted from the frame are : 0081
-Finally, the parity byte are : 81
+The returned ACK was was something else than 0C, C0 or CC. The returned value was: 79
 
 -------------END-
 

@@ -32,6 +32,8 @@ class Logs
 
                 std::ofstream writeLogs( "data.txt", std::ofstream::out | std::ofstream::app );
 
+                std::cout << "OK" << std::endl;
+
             }
         
         else

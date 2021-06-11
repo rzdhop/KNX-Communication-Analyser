@@ -17,20 +17,26 @@ int main(int,char* argv[])
 {
     argh::parser cmdl(argv);
 
+        std::string vbAdress(""); //DEFAULT FRAME IF NOTHING IS SPECIFIED
+
         if (cmdl[{ "-ad", "--autodetect" }])
     {
         std::cout << "Welcome to KNX Communications Analyser. Autodetecting COM ports.. It can takes about 1 minute.\n";
         std::cout << "The following COM ports are been found : " << "COM4" << std::endl;
         std::cout << std::endl;
         //Call of the driverapp.exe created by rdzhop AND select the 1st port (unsure)
-            	std::cout << std::endl << "[+] Initialising Serial Port" << std::endl;
+	           
+	        std::cout << std::endl << "[+] Initialising Serial Port" << std::endl;
 
-	            SerialPort* CSerialPort = _InitSerialPort(R"(..\..\Driver\DriverCore\bin\DriverCore.dll)");
+	        SerialPort* CSerialPort = _InitSerialPort(R"(..\..\Driver\DriverCore\bin\DriverCore.dll)");
 
-	                if (CSerialPort == nullptr) std::cout << std::endl << "[-] Errorno :" << GetLastError() << std::endl;
+	        if (CSerialPort == nullptr) std::cout << std::endl << "[-] Errorno :" << GetLastError() << std::endl;
 
 	        std::cout << "[+] Reading COM port :" << std::endl;
-	        while(1) std::cout << readSerialBuffer(CSerialPort, 1);
+
+	        std::string containerFrame = "";
+	        readSerialBuffer(CSerialPort, containerFrame);
+	        std::cout << "\n ooooO 1:" << containerFrame << "\n";
             //ET ON METS SUR vbAdress UNE FOIS QUE 
         //here comes the link to the function who cut the frames
     }
@@ -69,8 +75,6 @@ int main(int,char* argv[])
         }
 
     }
-
-    std::string vbAdress("BC120A3303E100810BCC"); //DEFAULT FRAME IF NOTHING IS SPECIFIED
 
     if (cmdl[{ "-f", "--frame" }])
     {
@@ -184,10 +188,14 @@ int main(int,char* argv[])
                  writeToLogs << "This frame was sent, and the reception was correct." << std::endl;
             }
 
-        else {std::cout <<"WARN: UNDEFINED ERROR!" << std::endl;}
+        else 
+            {
+                std::cout <<"The returned ACK was was something else than 0C, C0 or CC, but without giving an error." << tempVerifyAck << std::endl;
+                writeToLogs <<"The returned ACK was was something else than 0C, C0 or CC, but without giving an error. "<< std::endl;
+            }
 
     std::cout << std::endl;
-    std::cout << "Writing logs...";
+    std::cout << "Writing logs..."; //WAIT FOR THE OK BY LOGS.HPP
 
     adresse2.tempStr = writeToLogs.str();
 

@@ -25,8 +25,6 @@ public:
 
         temp0 = receivedKNXFrame.substr(0, 2);
 
-        std::cout << "aaaaaaa: " << temp0 << std::endl;
-
         char* char_arr;
         std::string str_obj(temp0);
         char_arr = &str_obj[0]; //Convert string into char.
@@ -35,8 +33,6 @@ public:
         temp0 = ch_to_binary(temp1);
 
         Decode::receivedKNXFrameBinaryHeader = temp0;
-
-        std::cout << "bbbbb: " << temp0 << std::endl;
     
         return temp0;
     }
@@ -196,8 +192,8 @@ public:
     {
         std::string temp0;
 
-        temp0 = receivedKNXFrame.substr((14 + (lengthOfData* 2)), 2);
-           std::cout << "verifyAck" << temp0 << std::endl;
+        temp0 = receivedKNXFrame.substr((14 + (lengthOfData + 1)), 2);
+           //std::cout << "verifyAck" << temp0 << std::endl;
             if (temp0 == "0C")
             {
                 return 0;
@@ -215,7 +211,8 @@ public:
 
             else
             {
-                return 99;
+                unsigned int temp_anotherACK = std::stoi (temp0);
+                return temp_anotherACK;
             }
     }
 
