@@ -43,7 +43,7 @@ If you find a bug, feel free to create a new [issue] (<https://github.com/rzdhop
 
 ## Contributors
 
-This awesome program was written by [IchInose_0x3b](https://github.com/rzdhop "IchInose_0x3b GitHub profile"), [VictorFS78](https://github.com/VictorFS78 "VictorFS78 GitHub profile") and [Soajoh](https://github.com/Soajoh "Soajoh GitHub profile").
+This awesome program was written by [Rida Verdu](https://github.com/rzdhop "Rida Verdu GitHub profile"), [VictorFS78](https://github.com/VictorFS78 "VictorFS78 GitHub profile") and [Soajoh](https://github.com/Soajoh "Soajoh GitHub profile").
 
 ## License
 
